@@ -4,7 +4,7 @@
 #include <string>
 #include <functional>
 
-#include "src/Hazel/Core.h"
+#include "Hazel/Core.h"
 
 namespace Hazel
 {
@@ -56,6 +56,8 @@ namespace Hazel
 
 	class EventDispatcher
 	{
+		template<typename T>
+		using EventFn = std::function<bool(T&)>;
 	public:
 		EventDispatcher(Event& event) : m_event(event){}
 
