@@ -59,7 +59,7 @@ namespace Hazel
 		EventDispatcher(Event& event) : m_event(event){}
 
 		template<typename T, typename F>
-		bool Dispath(const F& func)
+		bool Dispatch(const F& func)
 		{
 			if (m_event.GetEventType() == T::GetStaticType())
 			{
