@@ -49,15 +49,16 @@
 //  ES 3.0    300       "#version 300 es"
 //----------------------------------------
 
-#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
-#define _CRT_SECURE_NO_WARNINGS
-#endif
-
 #include "hzpch.h"
 #include "imgui.h"
 #include "ImGuiOpenGLRenderer.h"
 #include <glad/gl.h>
 #include <stdio.h>
+
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
 #include <stddef.h>     // intptr_t
 #else
