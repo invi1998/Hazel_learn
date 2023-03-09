@@ -8,6 +8,7 @@
 
 
 #include "Hazel/Application.h"
+#include "Platform/OpenGL/ImGuiOpenGLRenderer.h"
 
 namespace Hazel
 {
@@ -50,7 +51,7 @@ namespace Hazel
 		io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
 		io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 		
-		// ImGui_ImplOpenGL3_Init("#version 410");
+		ImGui_ImplOpenGL3_Init("#version 410");
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -67,12 +68,14 @@ namespace Hazel
 		io.DeltaTime = m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f);
 		m_Time = time;
 
+		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
 
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
 
 		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	}
 
