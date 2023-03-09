@@ -34,7 +34,16 @@ namespace Hazel
 
 	void Application::OnEvent(Event& e)
 	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispath<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+
 		HZ_CORE_INFO("{0}", e);
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& e)
+	{
+		m_Running = false;
+		return true;
 	}
 }
 
