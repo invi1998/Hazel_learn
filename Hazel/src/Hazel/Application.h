@@ -23,6 +23,10 @@ namespace Hazel
 
 		void PushOverLayer(Layer* layer);
 
+		inline Window& GetWindow() const { return *m_Window; }
+
+		inline static Application& Get() { return *s_Instance; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		std::unique_ptr<Window> m_Window;
@@ -30,6 +34,9 @@ namespace Hazel
 		bool m_Running = true;
 
 		LayStack m_LayStack;
+
+	private:
+		static Application* s_Instance;
 	};
 
 	// 在客户端定义
