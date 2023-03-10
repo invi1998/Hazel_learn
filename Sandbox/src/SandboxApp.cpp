@@ -7,12 +7,19 @@ public:
 
 	void OnUpdate() override
 	{
-		HZ_INFO("ExampleLayer::Update");
 	}
 
 	void OnEvent(Hazel::Event& event) override
 	{
-		HZ_TRACE("{0}", event);
+		if(event.GetEventType() == Hazel::EventType::KeyPressed)
+		{
+			Hazel::KeyPressedEvent& e = dynamic_cast<Hazel::KeyPressedEvent&>(event);
+			if (e.GetKeyCode() == HZ_KEY_TAB)
+			{
+				HZ_INFO("Tab is preesed!");
+			}
+			HZ_TRACE("{0}", static_cast<char>(e.GetKeyCode()));
+		}
 	}
 };
 
