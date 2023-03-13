@@ -8,6 +8,7 @@
 
 namespace Hazel
 {
+	class ImGuiLayer;
 
 	class HAZEL_API Application
 	{
@@ -34,6 +35,8 @@ namespace Hazel
 		bool m_Running = true;
 
 		LayStack m_LayStack;
+
+		ImGuiLayer* m_ImGuiLayer;
 
 	private:
 		static Application* s_Instance;
