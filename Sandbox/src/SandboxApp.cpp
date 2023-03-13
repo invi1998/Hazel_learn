@@ -29,7 +29,6 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverLayer(new Hazel::ImGuiLayer());
 	}
 
 	~Sandbox(){}

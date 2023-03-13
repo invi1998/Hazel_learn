@@ -8,6 +8,7 @@
 #include "Hazel/Event/ApplicationEvent.h"
 #include "Hazel/Log.h"
 #include "Hazel/Input.h"
+#include "ImGui/ImGuiLayer.h"
 
 namespace Hazel
 {
@@ -23,11 +24,14 @@ namespace Hazel
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		
+
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverLayer(m_ImGuiLayer);
 	}
 
 	Application::~Application()
 	{
+		delete m_ImGuiLayer;
 	}
 
 	void Application::Run()
@@ -46,6 +50,13 @@ namespace Hazel
 				{
 					layer->OnUpdate();
 				}
+
+				m_ImGuiLayer->Begin();
+				for (Layer* layer : m_LayStack)
+				{
+					layer->OnImGuiRender();
+				}
+				m_ImGuiLayer->End();
 
 				m_Window->OnUpdate();
 			}
