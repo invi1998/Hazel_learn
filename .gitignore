@@ -51,3 +51,5 @@ Intermediates/
 Hazel/vendor/VulkanSDK
 Hazelnut/assets/cache
 scripts/__pycache__
+
+imgui.ini
