@@ -1,4 +1,5 @@
 #include <Hazel.h>
+#include <imgui/imgui.h>
 
 class ExampleLayer : public Hazel::Layer
 {
@@ -7,6 +8,13 @@ public:
 
 	void OnUpdate() override
 	{
+	}
+
+	void OnImGuiRender() override
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("this is a test windows");
+		ImGui::End();
 	}
 
 	void OnEvent(Hazel::Event& event) override
