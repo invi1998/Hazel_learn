@@ -14,6 +14,7 @@ public:
 	{
 		ImGui::Begin("Test");
 		ImGui::Text("this is a test windows");
+		ImGui::ColorButton("click this", ImVec4(0.1f, 0.6f, 1.0f, 0.4f));
 		ImGui::End();
 	}
 
