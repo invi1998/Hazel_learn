@@ -1,8 +1,6 @@
 #include "hzpch.h"
 #include "OpenGLContext.h"
 
-#include "Hazel/Log.h"
-
 #include "GLFW/glfw3.h"
 #include <glad/gl.h>
 
@@ -21,7 +19,7 @@ namespace Hazel
 
 		std::cout << glGetString(GL_VENDOR) << " -0- " << glGetString(GL_RENDERER) << std::endl;
 
-		HZ_CORE_INFO("OpenGL Renderer: {0} {1}", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
+		// HZ_CORE_INFO("OpenGL Renderer: {0} {1}", glGetString(GL_VENDOR), glGetString(GL_RENDERER));
 	}
 
 	void OpenGLContext::SwapBuffers()
