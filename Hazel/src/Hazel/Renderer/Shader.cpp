@@ -39,7 +39,7 @@ namespace Hazel
 
 			// Use the infoLog as you see fit.
 			HZ_CORE_ERROR("{0}", infoLog.data());
-			HZ_CORE_ASSERT(false, "Vertex shader compliation failure!");
+			HZ_CORE_ASSERT(false, "Vertex shader compliation failure!")
 
 			// In this simple program, we'll just leave
 			return;
