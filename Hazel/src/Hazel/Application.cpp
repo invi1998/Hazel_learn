@@ -77,7 +77,7 @@ namespace Hazel
 
 		uint32_t index = 0;
 		auto& layout = m_VertexBuffer->GetLayout();
-		for (auto& element : layout)
+		for (auto& element : layout.GetElements())
 		{
 			HZ_CORE_INFO("{0}", index);
 			glEnableVertexAttribArray(index);
