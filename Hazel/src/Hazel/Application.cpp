@@ -10,6 +10,7 @@
 #include "Hazel/Input.h"
 #include "ImGui/ImGuiLayer.h"
 #include "Renderer/Buffer.h"
+#include "Renderer/Renderer.h"
 #include "Renderer/VertexArray.h"
 
 namespace Hazel
@@ -157,16 +158,19 @@ namespace Hazel
 
 		while (m_Running)
 		{
-			glClearColor(.1f, .1f, .1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+
+			RenderCommand::SetClearColor({.1f, .1f, .1f, 1});
+			RenderCommand::Clear();
+
+			Renderer::BeginScene();
 
 			m_BlueShader->Bind();
-			m_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_SquareVA);
 
 			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Submit(m_VertexArray);
+
+			Renderer::EndScene();
 
 			for (Layer* layer : m_LayStack)
 			{
