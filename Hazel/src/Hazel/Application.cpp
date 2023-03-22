@@ -43,7 +43,8 @@ namespace Hazel
 			0.0f, 0.5f, 0.0f, 0.2f, 0.2f, 0.8f, 1.0f
 		};
 
-		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		std::shared_ptr<VertexBuffer> vertexB;
+		vertexB.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 		
 		const BufferLayout layouts = {
 			{ShaderDataType::Float3, "a_Position"},		// Î»ÖÃ
@@ -51,14 +52,15 @@ namespace Hazel
 			// {ShaderDataType::Float3, "a_Normal"}		// ·¨Ïß
 		};
 
-		m_VertexBuffer->SetLayout(layouts);
+		vertexB->SetLayout(layouts);
 
-		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+		m_VertexArray->AddVertexBuffer(vertexB);
 
 		uint32_t indices[3] = { 0, 1, 2 };
-		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		std::shared_ptr<IndexBuffer> indexB;
+		indexB.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+		m_VertexArray->SetIndexBuffer(indexB);
 
 		m_SquareVA.reset(VertexArray::Create());
 		float squareVertices[3 * 4] = {
@@ -164,7 +166,7 @@ namespace Hazel
 
 			m_Shader->Bind();
 			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
 			for (Layer* layer : m_LayStack)
 			{

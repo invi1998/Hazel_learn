@@ -43,8 +43,6 @@ namespace Hazel
 		ImGuiLayer* m_ImGuiLayer;
 
 		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<VertexBuffer> m_VertexBuffer;
-		std::shared_ptr<IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<VertexArray> m_VertexArray;
 
 		std::shared_ptr<Shader> m_BlueShader;

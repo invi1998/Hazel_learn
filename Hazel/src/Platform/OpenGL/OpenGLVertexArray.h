@@ -8,7 +8,7 @@ namespace Hazel
 	{
 	public:
 		OpenGLVertexArray();
-		~OpenGLVertexArray() = default;
+		~OpenGLVertexArray();
 
 		void Bind() const override;
 		void Unbind() const override;
