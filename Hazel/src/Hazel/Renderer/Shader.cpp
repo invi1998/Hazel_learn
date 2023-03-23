@@ -3,6 +3,7 @@
 #include "Shader.h"
 
 #include "glad/gl.h"
+#include "glm/gtc/type_ptr.hpp"
 
 namespace Hazel
 {
@@ -135,5 +136,12 @@ namespace Hazel
 	void Shader::UnBind() const
 	{
 		glUseProgram(0);
+	}
+
+	void Shader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
+	{
+		// 将uniform变量传递到shader上
+		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 }

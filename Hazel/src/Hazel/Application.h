@@ -6,6 +6,7 @@
 #include "Event/ApplicationEvent.h"
 #include "Hazel/LayStack.h"
 #include "Hazel/Renderer/Shader.h"
+#include "Renderer/OrthographicCamera.h"
 
 namespace Hazel
 {
@@ -47,6 +48,8 @@ namespace Hazel
 
 		std::shared_ptr<Shader> m_BlueShader;
 		std::shared_ptr<VertexArray> m_SquareVA;
+
+		OrthographicCamera m_Camera;
 
 	private:
 		static Application* s_Instance;
