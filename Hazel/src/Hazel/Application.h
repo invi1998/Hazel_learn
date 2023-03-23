@@ -5,8 +5,6 @@
 #include "Window.h"
 #include "Event/ApplicationEvent.h"
 #include "Hazel/LayStack.h"
-#include "Hazel/Renderer/Shader.h"
-#include "Renderer/OrthographicCamera.h"
 
 namespace Hazel
 {
@@ -15,7 +13,7 @@ namespace Hazel
 	class VertexBuffer;
 	class ImGuiLayer;
 
-	class HAZEL_API Application
+	class Application
 	{
 	public:
 		Application();
@@ -42,14 +40,6 @@ namespace Hazel
 		LayStack m_LayStack;
 
 		ImGuiLayer* m_ImGuiLayer;
-
-		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<VertexArray> m_VertexArray;
-
-		std::shared_ptr<Shader> m_BlueShader;
-		std::shared_ptr<VertexArray> m_SquareVA;
-
-		OrthographicCamera m_Camera;
 
 	private:
 		static Application* s_Instance;
