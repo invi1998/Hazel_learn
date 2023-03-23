@@ -2,6 +2,7 @@
 
 #include "Application.h"
 
+#include "Core/Timestep.h"
 #include "GLFW/glfw3.h"
 #include "Hazel/Event/ApplicationEvent.h"
 #include "Hazel/Log.h"
@@ -22,6 +23,7 @@ namespace Hazel
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetVSync(false);
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverLayer(m_ImGuiLayer);
@@ -34,14 +36,17 @@ namespace Hazel
 
 	void Application::Run()
 	{
-		WindowResizeEvent e(1280, 720);
-		HZ_INFO(e);
 
 		while (m_Running)
 		{
+			// todo Platform::GetTime()
+			float time = static_cast<float>(glfwGetTime());
+			Timestep timestep = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
 			for (Layer* layer : m_LayStack)
 			{
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 			}
 
 			m_ImGuiLayer->Begin();
