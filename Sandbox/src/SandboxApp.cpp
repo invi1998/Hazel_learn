@@ -1,6 +1,9 @@
 #include <Hazel.h>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
+
+#include "Platform/OpenGL/OpenGLShader.h"
 
 class ExampleLayer : public Hazel::Layer
 {
@@ -93,7 +96,7 @@ public:
 			}
 		)";
 
-		m_Shader.reset(new Hazel::Shader(vertexSrc, fragmentSrc));
+		m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
 
 		std::string flatShaderVertexSrc = R"(
 			#version 330 core
@@ -127,7 +130,7 @@ public:
 			}
 		)";
 
-		m_FlatShader.reset(new Hazel::Shader(flatShaderVertexSrc, flatShaderFragmentSrc));
+		m_FlatShader.reset(Hazel::Shader::Create(flatShaderVertexSrc, flatShaderFragmentSrc));
 
 	}
 
@@ -190,22 +193,19 @@ public:
 		//glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, m_SquarePosition);
 		glm::mat4 scale = glm::scale(glm::mat4{ 1.0f }, glm::vec3{0.1f});
 
-		glm::vec4 redColor = { 0.05f, 0.05f, 0.05f, 1.0f};
-		glm::vec4 blueColor = { 0.2f, 0.2f, 0.2f, 1.0f };
-
-		for (int y = 0; y < 10; ++y)
+		for (int y = 0; y < 20; ++y)
 		{
-			for (int x = 0; x < 10; ++x)
+			for (int x = 0; x < 20; ++x)
 			{
 				glm::vec3 pos{ x * 0.11f, y*0.11f, 0.0f};
 				glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, pos) * scale;
 				if (x%2 == 0 && y%2 != 0 || x%2 != 0 && y%2 == 0)
 				{
-					m_FlatShader->UploadUniformFloat4("u_Color", redColor);
+					std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatShader)->UploadUniformFloat4("u_Color", m_SquareColor1);
 				}
 				else
 				{
-					m_FlatShader->UploadUniformFloat4("u_Color", blueColor);
+					std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatShader)->UploadUniformFloat4("u_Color", m_SquareColor2);
 				}
 				Hazel::Renderer::Submit(m_FlatShader, m_SquareVA, transform);
 			}
@@ -216,6 +216,10 @@ public:
 
 	void OnImGuiRender() override
 	{
+		ImGui::Begin("Settings");
+		ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor1));
+		ImGui::ColorEdit4("Square Color2", glm::value_ptr(m_SquareColor2));
+		ImGui::End();
 	}
 
 	void OnEvent(Hazel::Event& event) override
@@ -245,6 +249,9 @@ private:
 	glm::vec3 m_SquarePosition;
 	glm::mat4 m_SquareTransform;
 	float m_SquareMoveSpeed = 1.0f;
+
+	glm::vec4 m_SquareColor1;
+	glm::vec4 m_SquareColor2;
 
 };
 
