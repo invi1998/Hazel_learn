@@ -95,7 +95,7 @@ public:
 
 		m_Shader.reset(new Hazel::Shader(vertexSrc, fragmentSrc));
 
-		std::string blueShaderVertexSrc = R"(
+		std::string flatShaderVertexSrc = R"(
 			#version 330 core
 
 			layout(location = 0) in vec3 a_Position;
@@ -112,20 +112,22 @@ public:
 			}
 		)";
 
-		std::string blueShaderFragmentSrc = R"(
+		std::string flatShaderFragmentSrc = R"(
 			#version 330 core
 
 			layout(location = 0) out vec4 color;
 
 			in vec3 v_Position;
 
+			uniform vec4 u_Color;
+
 			void main()
 			{
-				color = vec4(0.2, 0.5, 0.8, 1.0);
+				color = u_Color;
 			}
 		)";
 
-		m_BlueShader.reset(new Hazel::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
+		m_FlatShader.reset(new Hazel::Shader(flatShaderVertexSrc, flatShaderFragmentSrc));
 
 	}
 
@@ -188,17 +190,27 @@ public:
 		//glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, m_SquarePosition);
 		glm::mat4 scale = glm::scale(glm::mat4{ 1.0f }, glm::vec3{0.1f});
 
+		glm::vec4 redColor = { 0.05f, 0.05f, 0.05f, 1.0f};
+		glm::vec4 blueColor = { 0.2f, 0.2f, 0.2f, 1.0f };
+
 		for (int y = 0; y < 10; ++y)
 		{
 			for (int x = 0; x < 10; ++x)
 			{
 				glm::vec3 pos{ x * 0.11f, y*0.11f, 0.0f};
 				glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, pos) * scale;
-
-				Hazel::Renderer::Submit(m_BlueShader, m_SquareVA, transform);
+				if (x%2 == 0 && y%2 != 0 || x%2 != 0 && y%2 == 0)
+				{
+					m_FlatShader->UploadUniformFloat4("u_Color", redColor);
+				}
+				else
+				{
+					m_FlatShader->UploadUniformFloat4("u_Color", blueColor);
+				}
+				Hazel::Renderer::Submit(m_FlatShader, m_SquareVA, transform);
 			}
 		}
-		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
+		//Hazel::Renderer::Submit(m_Shader, m_VertexArray);
 		Hazel::Renderer::EndScene();
 	}
 
@@ -218,7 +230,7 @@ private:
 	std::shared_ptr<Hazel::Shader> m_Shader;
 	std::shared_ptr<Hazel::VertexArray> m_VertexArray;
 
-	std::shared_ptr<Hazel::Shader> m_BlueShader;
+	std::shared_ptr<Hazel::Shader> m_FlatShader;
 	std::shared_ptr<Hazel::VertexArray> m_SquareVA;
 
 	// Па»ъ
