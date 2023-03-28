@@ -17,6 +17,8 @@ namespace Hazel
 
 		static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 
+		static void Init();
+
 	private:
 		struct SceneData
 		{
