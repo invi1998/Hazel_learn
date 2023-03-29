@@ -1,8 +1,10 @@
 #pragma once
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 
-#include <glad/gl.h>
 #include "Hazel/Renderer/Shader.h"
+
+// todo remove
+typedef unsigned int GLenum;
 
 namespace Hazel
 {
