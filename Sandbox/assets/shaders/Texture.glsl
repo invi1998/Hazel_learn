@@ -1,4 +1,4 @@
-#type vertex
+#Type vertex
 #version 330 core
 
 layout(location = 0) in vec3 a_Position;
@@ -15,7 +15,7 @@ void main()
 }
 
 
-#type pixel
+#Type pixel
 #version 330 core
 
 layout(location = 0) out vec4 color;

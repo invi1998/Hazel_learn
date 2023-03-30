@@ -172,10 +172,10 @@ namespace Hazel
 
 				// Use the infoLog as you see fit.
 				HZ_CORE_ERROR("{0}", infoLog.data());
-				HZ_CORE_ASSERT(false, "{0} shader compliation failure!", type)
+				HZ_CORE_ASSERT(false, "{0} shader compliation failure!", type);
 
-					// In this simple program, we'll just leave
-					break;
+				// In this simple program, we'll just leave
+				break;
 			}
 			glAttachShader(program, shader);
 			glShaderIDs.push_back(shader);
@@ -186,18 +186,18 @@ namespace Hazel
 
 		// Note the different functions here: glGetProgram* instead of glGetShader*.
 		GLint isLinked = 0;
-		glGetProgramiv(m_RenderID, GL_LINK_STATUS, (int*)&isLinked);
+		glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
 		if (isLinked == GL_FALSE)
 		{
 			GLint maxLength = 0;
-			glGetProgramiv(m_RenderID, GL_INFO_LOG_LENGTH, &maxLength);
+			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
 			// The maxLength includes the NULL character
 			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(m_RenderID, maxLength, &maxLength, &infoLog[0]);
+			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
 			// We don't need the program anymore.
-			glDeleteProgram(m_RenderID);
+			glDeleteProgram(program);
 			// Don't leak shaders either.
 			for (auto id : glShaderIDs)
 			{
@@ -215,7 +215,10 @@ namespace Hazel
 		// Always detach shaders after a successful link.
 		for (auto id : glShaderIDs)
 		{
-			glDetachShader(m_RenderID, id);
+			glDetachShader(program, id);
 		}
+
+		m_RenderID = program;
+
 	}
 }
