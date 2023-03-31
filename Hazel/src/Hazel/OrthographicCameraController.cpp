@@ -62,7 +62,7 @@ namespace Hazel
 
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
-		m_ZoomLevel -= e.GetYOffset() * 0.5f;
+		m_ZoomLevel -= e.GetYOffset() * 0.25f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 
@@ -71,7 +71,7 @@ namespace Hazel
 
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	{
-		m_AspectRatio -= static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());
+		m_AspectRatio = static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 
 		return false;
