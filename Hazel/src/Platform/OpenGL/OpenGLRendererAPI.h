@@ -3,7 +3,7 @@
 
 namespace Hazel
 {
-	class OpenGLRendererAPI : public Hazel::RendererAPI
+	class OpenGLRendererAPI : public RendererAPI
 	{
 	public:
 		void Init() override;
