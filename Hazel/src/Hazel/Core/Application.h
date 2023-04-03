@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Core.h"
-#include "Event/Event.h"
+#include "Hazel/Event/Event.h"
 #include "Window.h"
-#include "Event/ApplicationEvent.h"
-#include "Hazel/LayStack.h"
+#include "Hazel/Event/ApplicationEvent.h"
+#include "Hazel/Core/LayStack.h"
 
 namespace Hazel
 {

@@ -5,7 +5,6 @@
 
 #include "WindowsWindow.h"
 
-#include "Hazel/Log.h"
 #include "Hazel/Event/ApplicationEvent.h"
 #include "Hazel/Event/KeyEvent.h"
 #include "Hazel/Event/MouseEvent.h"

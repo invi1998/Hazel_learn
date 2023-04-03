@@ -2,12 +2,12 @@
 
 #include "Application.h"
 
-#include "Core/Timestep.h"
+#include "Hazel/Core/Timestep.h"
 #include "GLFW/glfw3.h"
 #include "Hazel/Event/ApplicationEvent.h"
-#include "Hazel/Log.h"
-#include "ImGui/ImGuiLayer.h"
-#include "Renderer/Renderer.h"
+#include "Hazel/Core/Log.h"
+#include "Hazel/ImGui/ImGuiLayer.h"
+#include "Hazel/Renderer/Renderer.h"
 
 namespace Hazel
 {

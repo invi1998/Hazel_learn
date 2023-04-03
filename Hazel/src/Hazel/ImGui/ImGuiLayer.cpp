@@ -8,7 +8,7 @@
 
 #include "ImGuiLayer.h"
 
-#include "Hazel/Application.h"
+#include "Hazel/Core/Application.h"
 
 namespace Hazel
 {
