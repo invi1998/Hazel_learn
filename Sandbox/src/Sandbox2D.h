@@ -23,4 +23,7 @@ private:
 
 	glm::vec4 m_SquareColor1 = { 0.1f, 0.23f, 0.88f, 1.0f };
 	glm::vec4 m_SquareColor2 = { 0.1f, 0.66f, 0.12f, 1.0f };
+
+	std::shared_ptr<Hazel::Texture2D> m_BackgroundTexture;
+	std::shared_ptr<Hazel::Texture2D> m_FrontTexture;
 };

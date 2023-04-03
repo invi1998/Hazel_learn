@@ -6,7 +6,8 @@
 
 Sandbox2D::Sandbox2D():Layer("Sandbox2D"), m_CameraController(1920.f/1080.f, true)
 {
-	
+	m_BackgroundTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
+	m_FrontTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 }
 
 void Sandbox2D::OnAttach()
@@ -30,8 +31,12 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
+
 	Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, m_SquareColor1);
 	Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.5f, 0.5f }, m_SquareColor2);
+
+	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 0.5f, 0.5f }, m_BackgroundTexture);
+	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.4f, 0.4f }, m_FrontTexture);
 
 	Hazel::Renderer2D::EndScene();
 

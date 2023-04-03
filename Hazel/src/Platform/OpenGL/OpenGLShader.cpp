@@ -71,6 +71,11 @@ namespace Hazel
 		UploadUniformMat4(name, value);
 	}
 
+	void OpenGLShader::SetInt(const std::string& name, int value)
+	{
+		UploadUniformInt(name, value);
+	}
+
 	const std::string& OpenGLShader::GetName() const
 	{
 		return m_Name;
