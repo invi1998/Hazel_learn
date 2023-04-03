@@ -3,7 +3,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui/imgui.h>
 
+#include "Sandbox2D.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+
+// ---------entry point-----------
+
+#include "Hazel/Core/EntryPoint.h"
+
+// -------------------------------
 
 class ExampleLayer : public Hazel::Layer
 {
@@ -15,7 +22,7 @@ public:
 		// Index Buffer
 		// Shader
 
-		m_VertexArray.reset(Hazel::VertexArray::Create());
+		m_VertexArray = Hazel::VertexArray::Create();
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.3f, 0.7f, 1.0f,
@@ -42,7 +49,7 @@ public:
 
 		m_VertexArray->SetIndexBuffer(indexB);
 
-		m_SquareVA.reset(Hazel::VertexArray::Create());
+		m_SquareVA = Hazel::VertexArray::Create();
 		float squareVertices[5 * 4] = {
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
 			0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
@@ -250,7 +257,8 @@ class Sandbox : public Hazel::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		// PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
 	}
 
 	~Sandbox(){}
