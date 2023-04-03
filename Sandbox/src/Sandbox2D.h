@@ -21,5 +21,6 @@ private:
 	std::shared_ptr<Hazel::Shader> m_FlatShader;
 	std::shared_ptr<Hazel::VertexArray> m_SquareVA;
 
-	glm::vec4 m_SquareColor = { 0.1f, 0.23f, 0.88f, 1.0f };
+	glm::vec4 m_SquareColor1 = { 0.1f, 0.23f, 0.88f, 1.0f };
+	glm::vec4 m_SquareColor2 = { 0.1f, 0.66f, 0.12f, 1.0f };
 };

@@ -7,6 +7,7 @@
 
 namespace Hazel
 {
+
 	std::shared_ptr<Shader> Shader::Create(const std::string& filepath)
 	{
 		switch (Renderer::GetAPI())
