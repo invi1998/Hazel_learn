@@ -33,7 +33,9 @@
 
 # Binaries
 **/bin/
+**/bin-int/
 bin-int/
+bin/
 Intermediates/
 
 # Hazel files
