@@ -35,7 +35,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 	Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, m_SquareColor1);
 	Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.5f, 0.5f }, m_SquareColor2);
 
-	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 0.5f, 0.5f }, m_BackgroundTexture);
+	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.5f, 10.5f }, m_BackgroundTexture);
 	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.4f, 0.4f }, m_FrontTexture);
 
 	Hazel::Renderer2D::EndScene();
