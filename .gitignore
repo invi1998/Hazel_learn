@@ -49,6 +49,7 @@ Intermediates/
 
 # Directories
 Hazel/vendor/VulkanSDK
+Hazel/vendor/**/bin/
 Hazelnut/assets/cache
 scripts/__pycache__
 
