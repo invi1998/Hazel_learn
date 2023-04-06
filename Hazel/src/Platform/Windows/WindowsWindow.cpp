@@ -8,11 +8,12 @@
 #include "Hazel/Event/ApplicationEvent.h"
 #include "Hazel/Event/KeyEvent.h"
 #include "Hazel/Event/MouseEvent.h"
+#include "Hazel/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Hazel
 {
-	static bool s_GLFWInitialized = false;
+	static uint8_t s_GLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
@@ -26,32 +27,46 @@ namespace Hazel
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+		HZ_PROFILE_FUNCTION();
+
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		HZ_PROFILE_FUNCTION();
+
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
 
 		HZ_CORE_INFO("Create window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
-		if(!s_GLFWInitialized)
+		if(s_GLFWWindowCount == 0)
 		{
+			HZ_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
 			HZ_CORE_ASSERT(success, "Could not initialize GLFW!");
 
 			glfwSetErrorCallback(GLFWErrorCallback);
-			s_GLFWInitialized = true;
 		}
 
-		m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), m_Data.Title.c_str(), nullptr, nullptr);
+		{
+			HZ_PROFILE_SCOPE("glfwCreateWindow");
+#if defined(HZ_DEBUG)
+			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
+				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+			m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), m_Data.Title.c_str(), nullptr, nullptr);
+			++s_GLFWWindowCount;
+		}
 
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
@@ -155,17 +170,23 @@ namespace Hazel
 
 	void WindowsWindow::Shutdown() const
 	{
+		HZ_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_Window);
 	}
 
 	void WindowsWindow::OnUpdate()
 	{
+		HZ_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+		HZ_PROFILE_FUNCTION();
+
 		if (enabled)
 		{
 			glfwSwapInterval(1);	// 如果显卡支持垂直同步，则启用垂直同步

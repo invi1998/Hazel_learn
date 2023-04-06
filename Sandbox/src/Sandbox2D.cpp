@@ -9,25 +9,31 @@
 
 Sandbox2D::Sandbox2D():Layer("Sandbox2D"), m_CameraController(1920.f/1080.f, true)
 {
+	HZ_PROFILE_FUNCTION();
+
 	m_BackgroundTexture = Hazel::Texture2D::Create("assets/textures/Checkerboard.png");
 	m_FrontTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 }
 
 void Sandbox2D::OnAttach()
 {
+	HZ_PROFILE_FUNCTION();
+
 	Layer::OnAttach();
 }
 
 void Sandbox2D::OnDetach()
 {
+	HZ_PROFILE_FUNCTION();
+
 	Layer::OnDetach();
 }
 
 void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 {
-	Layer::OnUpdate(timeStep);
-	
 	HZ_PROFILE_FUNCTION();
+
+	Layer::OnUpdate(timeStep);
 
 	// Update
 	{
