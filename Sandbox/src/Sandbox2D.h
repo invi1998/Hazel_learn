@@ -27,11 +27,4 @@ private:
 	std::shared_ptr<Hazel::Texture2D> m_BackgroundTexture;
 	std::shared_ptr<Hazel::Texture2D> m_FrontTexture;
 
-	struct ProfileResult
-	{
-		const char* Name;
-		float Time;
-	};
-
-	std::vector<ProfileResult> m_ProfileResults;
 };
