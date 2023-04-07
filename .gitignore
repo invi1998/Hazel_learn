@@ -56,3 +56,5 @@ Hazelnut/assets/cache
 scripts/__pycache__
 
 imgui.ini
+
+Sandbox/*.json
