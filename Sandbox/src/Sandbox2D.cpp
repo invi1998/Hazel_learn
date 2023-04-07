@@ -55,10 +55,10 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
 		Hazel::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, m_SquareColor1);
-		Hazel::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.5f, 0.5f }, m_SquareColor2);
+		Hazel::Renderer2D::DrawRotatedQuad({ -1.0f, 0.0f }, { 0.5f, 0.5f }, m_Rotation2, m_SquareColor2);
 
-		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.5f, 10.5f }, m_BackgroundTexture);
-		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.4f, 0.4f }, m_FrontTexture);
+		Hazel::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f, -0.1f }, { 10.5f, 10.5f }, m_Rotation1, m_BackgroundTexture, m_TilingFactor, m_SquareColor4);
+		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.4f, 0.4f }, m_FrontTexture, 1.0, m_SquareColor3);
 
 		Hazel::Renderer2D::EndScene();
 	}
@@ -73,6 +73,11 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::Begin("Settings");
 	ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor1));
 	ImGui::ColorEdit4("Square Color2", glm::value_ptr(m_SquareColor2));
+	ImGui::DragFloat("TilingFactor",&m_TilingFactor, 1.0f, 0.0f, 100.0f);
+	ImGui::DragFloat("Rotation1",&m_Rotation1, 1.0f, 0.0f, 100.0f);
+	ImGui::DragFloat("Rotation2",&m_Rotation2, 1.0f, 0.0f, 360.0f);
+	ImGui::ColorEdit4("Square Color3", glm::value_ptr(m_SquareColor3));
+	ImGui::ColorEdit4("Square Color4", glm::value_ptr(m_SquareColor4));
 
 	ImGui::End();
 }
