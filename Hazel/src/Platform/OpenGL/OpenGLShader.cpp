@@ -101,6 +101,13 @@ namespace Hazel
 		UploadUniformFloat(name, value);
 	}
 
+	void OpenGLShader::SetIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		HZ_PROFILE_FUNCTION();
+
+		UploadUniformIntArray(name, values, count);
+	}
+
 	const std::string& OpenGLShader::GetName() const
 	{
 		return m_Name;
@@ -108,48 +115,42 @@ namespace Hazel
 
 	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 	{
-		HZ_PROFILE_FUNCTION();
-
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniform1i(location, value);
 	}
 
+	void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
+		glUniform1iv(location, count, values);
+	}
+
 	void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
 	{
-		HZ_PROFILE_FUNCTION();
-
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniform1f(location, value);
 	}
 
 	void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
 	{
-		HZ_PROFILE_FUNCTION();
-
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniform2f(location, value.x, value.y);
 	}
 
 	void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
 	{
-		HZ_PROFILE_FUNCTION();
-
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniform3f(location, value.x, value.y, value.z);
 	}
 
 	void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& values)
 	{
-		HZ_PROFILE_FUNCTION();
-
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniform4f(location, values.x, values.y, values.z, values.w);
 	}
 
 	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 	{
-		HZ_PROFILE_FUNCTION();
-
 		// 将uniform变量传递到shader上
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
@@ -157,8 +158,6 @@ namespace Hazel
 
 	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 	{
-		HZ_PROFILE_FUNCTION();
-
 		// 将uniform变量传递到shader上
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
