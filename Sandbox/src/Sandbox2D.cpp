@@ -99,7 +99,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 		x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
 		y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
 		m_Particle.Position = { x + pos.x, y + pos.y };
-		for (int i = 0; i < 50; i++)
+		for (int i = 0; i < 20; i++)
 		{
 			m_ParticleSystem.Emit(m_Particle);
 		}
