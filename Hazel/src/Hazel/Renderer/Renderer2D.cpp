@@ -289,15 +289,17 @@ namespace Hazel
 
 		s_Data.QuadIndexCount += 6;
 
+		s_Data.starts.QuadCount++;
+
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
 		const glm::vec4& color)
 	{
-		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, color);
+		DrawQuad({ position.x, position.y, 0.0f }, size, rotation, color);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation,
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, float rotation,
 		const glm::vec4& color)
 	{
 		HZ_PROFILE_FUNCTION();
@@ -343,15 +345,16 @@ namespace Hazel
 		s_Data.QuadVertexBufferPtr++;
 
 		s_Data.QuadIndexCount += 6;
+		s_Data.starts.QuadCount++;
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, float rotation,
 		const std::shared_ptr<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
-		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
+		DrawQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation,
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, float rotation,
 		const std::shared_ptr<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
 	{
 		HZ_PROFILE_FUNCTION();
@@ -415,6 +418,7 @@ namespace Hazel
 
 		s_Data.QuadIndexCount += 6;
 
+		s_Data.starts.QuadCount++;
 	}
 
 }
