@@ -13,6 +13,7 @@ Sandbox2D::Sandbox2D():Layer("Sandbox2D"), m_CameraController(1920.f/1080.f, tru
 
 	m_BackgroundTexture = Hazel::Texture2D::Create("assets/textures/batthern.png");
 	m_FrontTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
+	m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/tilemap.png");
 
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
@@ -87,6 +88,11 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 		}
 		Hazel::Renderer2D::EndScene();
 	}*/
+
+	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	Hazel::Renderer2D::DrawQuad({ -0.0f, -0.0f, -0.0f }, { 10.5f, 10.5f }, m_BackgroundTexture, m_TilingFactor);
+	Hazel::Renderer2D::EndScene();
+
 
 	if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
 	{
