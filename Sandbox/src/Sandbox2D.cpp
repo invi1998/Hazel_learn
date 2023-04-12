@@ -89,11 +89,6 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 		Hazel::Renderer2D::EndScene();
 	}*/
 
-	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	Hazel::Renderer2D::DrawQuad({ -0.0f, -0.0f, -0.0f }, { 10.5f, 10.5f }, m_BackgroundTexture, m_TilingFactor);
-	Hazel::Renderer2D::EndScene();
-
-
 	if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
 	{
 		auto [x, y] = Hazel::Input::GetMousePosition();
@@ -116,6 +111,11 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	m_ParticleSystem.OnRender();
 	Hazel::Renderer2D::EndScene();
+
+	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_SpriteSheet);
+	Hazel::Renderer2D::EndScene();
+
 }
 
 void Sandbox2D::OnImGuiRender()
