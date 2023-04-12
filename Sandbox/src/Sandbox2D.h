@@ -41,6 +41,10 @@ private:
 	std::shared_ptr<Hazel::Texture2D> m_FrontTexture;
 
 	std::shared_ptr<Hazel::Texture2D> m_SpriteSheet;
+	std::shared_ptr<Hazel::Texture2D> m_SpriteSheet2;
+
+	std::shared_ptr<Hazel::SubTexture2D> m_TextureStairs;
+	std::shared_ptr<Hazel::SubTexture2D> m_TextureStairs2;
 
 	ParticleProps m_Particle;
 	ParticleSystem m_ParticleSystem;

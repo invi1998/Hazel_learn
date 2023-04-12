@@ -14,6 +14,9 @@ Sandbox2D::Sandbox2D():Layer("Sandbox2D"), m_CameraController(1920.f/1080.f, tru
 	m_BackgroundTexture = Hazel::Texture2D::Create("assets/textures/batthern.png");
 	m_FrontTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
 	m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/tilemap.png");
+	m_SpriteSheet2 = Hazel::Texture2D::Create("assets/game/textures/tiles_sheet@2.png");
+	m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 4, 6 }, { 16.0f, 16.0f }, {1.0f, 1.0f}, 1.0f);
+	m_TextureStairs2 = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet2, { 5, 2 }, { 128.0f, 128.0f }, {4.0f, 4.0f}, 0.0f);
 
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
@@ -113,7 +116,8 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 	Hazel::Renderer2D::EndScene();
 
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_SpriteSheet);
+	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureStairs);
+	Hazel::Renderer2D::DrawQuad({ 5.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureStairs2);
 	Hazel::Renderer2D::EndScene();
 
 }
