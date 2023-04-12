@@ -6,6 +6,28 @@
 
 #include <chrono>
 
+static const uint32_t s_MapWidth = 50;
+
+static const char* s_MapTiles = 
+"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwddddddddddddt"
+"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwdddddddtdddd"
+"wwwwwwwwwwwwwwwwdddddwwwwwwwwwwwwwwwwwwwdddtdddddd"
+"wwwwwwwwwwwwdddtdddddddwwwwwwwwwwwwwwwwwwdddddddww"
+"wwwwwwwwwwddddddddddtddddwwwwwwwwwwwwwwwwwddddtddw"
+"wwwwwwwwwddtddddddddddddddwwwwwwwwwwwwwwwddddddddd"
+"wwwwwwwddddtwwwdddddtdddddddddwwwwwwwwwwwwdddddddd"
+"wwwwwddddddddwwddddddddtddddddwwwwwwwwwwwwwwwdddww"
+"wwwwdddddddddddddddddddddddddddwwwwwwwwwwwwwwwwddd"
+"wwwwddddddddddddddddddddwwwdddddwwwwwwwwwwwwwwwwww"
+"wwwwwwddttddddddddddddwwwdddddddwwwwwwwwwwwwwwwwww"
+"wwwwwddddddddddddddddddwwdddttddwwwwwwwwwwwwwwwwww"
+"wwwwwwwwwwwwwdddddttdddddtddddwwwwwwwwwwwwwwwwwwww"
+"wwwwwwwwwwwwwwwdddddtddddddwwwwwwwwwwwwwwwwwwwwwww"
+"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+;
 
 Sandbox2D::Sandbox2D():Layer("Sandbox2D"), m_CameraController(1920.f/1080.f, true)
 {
@@ -13,14 +35,25 @@ Sandbox2D::Sandbox2D():Layer("Sandbox2D"), m_CameraController(1920.f/1080.f, tru
 
 	m_BackgroundTexture = Hazel::Texture2D::Create("assets/textures/batthern.png");
 	m_FrontTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
-	m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/tilemap.png");
-	m_SpriteSheet2 = Hazel::Texture2D::Create("assets/game/textures/tiles_sheet@2.png");
-	m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 4, 6 }, { 16.0f, 16.0f }, {1.0f, 1.0f}, 1.0f);
-	m_TextureStairs2 = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet2, { 5, 2 }, { 128.0f, 128.0f }, {4.0f, 4.0f}, 0.0f);
+	m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/roguelikeSheet.png");
 
+	m_MapWidth = s_MapWidth;
+	m_MapHeight = strlen(s_MapTiles) / s_MapWidth;
+
+	m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 3, 26 }, { 16.0f, 16.0f }, { 1.0f, 1.0f }, 1.0f);
+
+	// Ë®
+	m_TextureMap['w'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {3, 26}, {16.0f, 16.0f}, {1.0f, 1.0f}, 1.0f);
+	// Â½µØ
+	m_TextureMap['d'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 5, 29 }, { 16.0f, 16.0f }, {1.0f, 1.0f}, 1.0f);
+	// Ê÷
+	m_TextureMap['t'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 13, 21 }, { 16.0f, 16.0f }, {1.0f, 1.0f}, 1.0f);
+	
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
 	m_Particle.Position = { 0.0f, 0.0f };
+
+	m_CameraController.SetZoomLevel(5.0f);
 }
 
 void Sandbox2D::OnAttach()
@@ -117,7 +150,26 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureStairs);
-	Hazel::Renderer2D::DrawQuad({ 5.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureStairs2);
+
+	for (uint32_t y = 0; y < m_MapHeight; y++)
+	{
+		for (uint32_t x = 0; x < m_MapWidth; x++)
+		{
+			char tileType = s_MapTiles[x + y * m_MapWidth];
+			std::shared_ptr<Hazel::SubTexture2D> texture;
+			if (m_TextureMap.contains(tileType))
+			{
+				texture = m_TextureMap[tileType];
+			}
+			else
+			{
+				texture = m_TextureStairs;
+			}
+
+			Hazel::Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f, y - m_MapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
+		}
+	}
+
 	Hazel::Renderer2D::EndScene();
 
 }
