@@ -100,7 +100,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 		Hazel::RenderCommand::Clear();
 	}
 
-	/*{
+	{
 		HZ_PROFILE_SCOPE("Renderer Draw");
 		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
@@ -123,7 +123,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 			}
 		}
 		Hazel::Renderer2D::EndScene();
-	}*/
+	}
 
 	if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
 	{
@@ -148,29 +148,29 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 	m_ParticleSystem.OnRender();
 	Hazel::Renderer2D::EndScene();
 
-	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureStairs);
+	//Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	//Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureStairs);
 
-	for (uint32_t y = 0; y < m_MapHeight; y++)
-	{
-		for (uint32_t x = 0; x < m_MapWidth; x++)
-		{
-			char tileType = s_MapTiles[x + y * m_MapWidth];
-			std::shared_ptr<Hazel::SubTexture2D> texture;
-			if (m_TextureMap.contains(tileType))
-			{
-				texture = m_TextureMap[tileType];
-			}
-			else
-			{
-				texture = m_TextureStairs;
-			}
+	//for (uint32_t y = 0; y < m_MapHeight; y++)
+	//{
+	//	for (uint32_t x = 0; x < m_MapWidth; x++)
+	//	{
+	//		char tileType = s_MapTiles[x + y * m_MapWidth];
+	//		std::shared_ptr<Hazel::SubTexture2D> texture;
+	//		if (m_TextureMap.contains(tileType))
+	//		{
+	//			texture = m_TextureMap[tileType];
+	//		}
+	//		else
+	//		{
+	//			texture = m_TextureStairs;
+	//		}
 
-			Hazel::Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f, y - m_MapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
-		}
-	}
+	//		Hazel::Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f, y - m_MapHeight / 2.0f, 0.5f }, { 1.0f, 1.0f }, texture);
+	//	}
+	//}
 
-	Hazel::Renderer2D::EndScene();
+	//Hazel::Renderer2D::EndScene();
 
 }
 
@@ -180,27 +180,7 @@ void Sandbox2D::OnImGuiRender()
 
 	HZ_PROFILE_FUNCTION();
 
-	/*ImGui::Begin("Settings");
-	ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor1));
-	ImGui::ColorEdit4("Square Color2", glm::value_ptr(m_SquareColor2));
-	ImGui::DragFloat("TilingFactor",&m_TilingFactor, 1.0f, 0.0f, 100.0f);
-	ImGui::DragFloat("Rotation1",&m_Rotation1, 1.0f, 0.0f, 100.0f);
-	ImGui::DragFloat("Rotation2",&m_Rotation2, 1.0f, 0.0f, 360.0f);
-	ImGui::ColorEdit4("Square Color3", glm::value_ptr(m_SquareColor3));
-	ImGui::ColorEdit4("Square Color4", glm::value_ptr(m_SquareColor4));
-
-	ImGui::NewLine();
-
-	auto stats = Hazel::Renderer2D::GetStarts();
-	ImGui::Text("Renderer2D Starts:");
-	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-	ImGui::Text("QuadCounts: %d", stats.QuadCount);
-	ImGui::Text("Vertices: %d", stats.GetTotalIndexCount());
-	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-	ImGui::End();*/
-
-	ImGui::Begin("Particle System");
+	/*ImGui::Begin("Particle System");
 
 	ImGui::ColorEdit4("ParticleColorBegin", glm::value_ptr(m_ParticleColorBegin));
 	ImGui::NewLine();
@@ -214,7 +194,100 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::NewLine();
 	ImGui::DragFloat("ParticleSizeVariation", &m_ParticleSizeVariation, 0.1f, 0.0f, 1.0f);
 
+	ImGui::End();*/
+
+	static bool p_open = true;
+	static bool opt_fullscreen = true;
+	static bool opt_padding = false;
+	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+	// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
+	// because it would be confusing to have two docking targets within each others.
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	if (opt_fullscreen)
+	{
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->WorkPos);
+		ImGui::SetNextWindowSize(viewport->WorkSize);
+		ImGui::SetNextWindowViewport(viewport->ID);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	}
+	else
+	{
+		dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
+	}
+
+	// When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
+	// and handle the pass-thru hole, so we ask Begin() to not render a background.
+	if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+		window_flags |= ImGuiWindowFlags_NoBackground;
+
+	// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
+	// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
+	// all active windows docked into it will lose their parent and become undocked.
+	// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
+	// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
+	if (!opt_padding)
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::Begin("DockSpace Demo", &p_open, window_flags);
+	if (!opt_padding)
+		ImGui::PopStyleVar();
+
+	if (opt_fullscreen)
+		ImGui::PopStyleVar(2);
+
+	// Submit the DockSpace
+	ImGuiIO& io = ImGui::GetIO();
+	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	{
+		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+	}
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			// Disabling fullscreen would allow the window to be moved to the front of other windows,
+			// which we can't undo at the moment without finer window depth/z control.
+			if (ImGui::MenuItem("Exit"))
+			{
+				Hazel::Application::Get().Close();
+			}
+			
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	ImGui::Begin("Settings");
+	ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor1));
+	ImGui::ColorEdit4("Square Color2", glm::value_ptr(m_SquareColor2));
+	ImGui::DragFloat("TilingFactor", &m_TilingFactor, 1.0f, 0.0f, 100.0f);
+	ImGui::DragFloat("Rotation1", &m_Rotation1, 1.0f, 0.0f, 100.0f);
+	ImGui::DragFloat("Rotation2", &m_Rotation2, 1.0f, 0.0f, 360.0f);
+	ImGui::ColorEdit4("Square Color3", glm::value_ptr(m_SquareColor3));
+	ImGui::ColorEdit4("Square Color4", glm::value_ptr(m_SquareColor4));
+
+	ImGui::NewLine();
+
+	auto stats = Hazel::Renderer2D::GetStarts();
+	ImGui::Text("Renderer2D Starts:");
+	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+	ImGui::Text("QuadCounts: %d", stats.QuadCount);
+	ImGui::Text("Vertices: %d", stats.GetTotalIndexCount());
+	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+	const uint32_t textureID = m_BackgroundTexture->GetRendererID();
+	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ 64.0f, 64.0f });
+
 	ImGui::End();
+
+	ImGui::End();
+
 }
 
 void Sandbox2D::OnEvent(Hazel::Event& event)
