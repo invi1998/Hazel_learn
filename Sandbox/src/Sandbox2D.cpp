@@ -35,19 +35,19 @@ Sandbox2D::Sandbox2D():Layer("Sandbox2D"), m_CameraController(1920.f/1080.f, tru
 
 	m_BackgroundTexture = Hazel::Texture2D::Create("assets/textures/batthern.png");
 	m_FrontTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
-	m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/roguelikeSheet.png");
+	m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
 
 	m_MapWidth = s_MapWidth;
 	m_MapHeight = strlen(s_MapTiles) / s_MapWidth;
 
-	m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 3, 26 }, { 16.0f, 16.0f }, { 1.0f, 1.0f }, 1.0f);
+	m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 11, 11 }, { 128.0f, 128.0f }, { 1.0f, 1.0f });
 
 	// Ë®
-	m_TextureMap['w'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {3, 26}, {16.0f, 16.0f}, {1.0f, 1.0f}, 1.0f);
+	m_TextureMap['w'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {11, 11}, { 128.0f, 128.0f }, {1.0f, 1.0f});
 	// Â½µØ
-	m_TextureMap['d'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 5, 29 }, { 16.0f, 16.0f }, {1.0f, 1.0f}, 1.0f);
+	m_TextureMap['d'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 6, 11 }, { 128.0f, 128.0f }, {1.0f, 1.0f});
 	// Ê÷
-	m_TextureMap['t'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 13, 21 }, { 16.0f, 16.0f }, {1.0f, 1.0f}, 1.0f);
+	m_TextureMap['t'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 1, 11 }, { 128.0f, 128.0f }, {1.0f, 1.0f});
 	
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
