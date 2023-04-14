@@ -1,6 +1,6 @@
 workspace "Hazel"
 	architecture "x86_64"
-	startproject "Hazel-Editor"
+	startproject "HazelInput"
 
 	configurations
 	{
@@ -110,7 +110,6 @@ project "Hazel"
 		runtime "Release"
 		optimize "on"
 	
-
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
@@ -163,8 +162,8 @@ project "Sandbox"
 		runtime "Release"
 		optimize "on"
 
-project "Hazel-Editor"
-	location "Hazel-Editor"
+project "HazelInput"
+	location "HazelInput"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
