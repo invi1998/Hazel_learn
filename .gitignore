@@ -57,4 +57,6 @@ scripts/__pycache__
 
 imgui.ini
 
+Hazel-Editor/*.json
+HazelInput/*.json
 Sandbox/*.json
