@@ -278,7 +278,7 @@ void Sandbox2D::OnImGuiRender()
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
 		const uint32_t textureID = m_FrameBuffer->GetColorAttachmentRenderer2D();
-		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ 1280, 720 });
+		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ 1280, 720 }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
 		ImGui::End();
 
@@ -306,7 +306,7 @@ void Sandbox2D::OnImGuiRender()
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
 		const uint32_t textureID = m_BackgroundTexture->GetRendererID();
-		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ 1280, 720 });
+		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ 1280, 720 }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
 		ImGui::End();
 	}
