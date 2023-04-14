@@ -20,6 +20,11 @@ namespace Hazel
 		
 		virtual const FrameBufferSpecification& GetSpecification() const = 0;
 
+		virtual void Bind() = 0;
+		virtual void UnBind() = 0;
+
+		virtual uint32_t GetColorAttachmentRenderer2D() const = 0;
+
 		static std::shared_ptr<FrameBuffer> Create(const FrameBufferSpecification& specification);
 	};
 }

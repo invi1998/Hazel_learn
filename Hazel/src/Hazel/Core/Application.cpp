@@ -100,7 +100,7 @@ namespace Hazel
 		HZ_PROFILE_FUNCTION();
 
 		m_LayStack.PushLayer(layer);
-		layer->OnDetach();
+		layer->OnAttach();
 	}
 
 	void Application::PushOverLayer(Layer* layer)

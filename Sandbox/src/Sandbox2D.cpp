@@ -31,29 +31,6 @@ static const char* s_MapTiles =
 
 Sandbox2D::Sandbox2D():Layer("Sandbox2D"), m_CameraController(1920.f/1080.f, true)
 {
-	HZ_PROFILE_FUNCTION();
-
-	m_BackgroundTexture = Hazel::Texture2D::Create("assets/textures/batthern.png");
-	m_FrontTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
-	m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
-
-	m_MapWidth = s_MapWidth;
-	m_MapHeight = strlen(s_MapTiles) / s_MapWidth;
-
-	m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 11, 11 }, { 128.0f, 128.0f }, { 1.0f, 1.0f });
-
-	// 水
-	m_TextureMap['w'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, {11, 11}, { 128.0f, 128.0f }, {1.0f, 1.0f});
-	// 陆地
-	m_TextureMap['d'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 6, 11 }, { 128.0f, 128.0f }, {1.0f, 1.0f});
-	// 树
-	m_TextureMap['t'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 1, 11 }, { 128.0f, 128.0f }, {1.0f, 1.0f});
-	
-	m_Particle.Velocity = { 0.0f, 0.0f };
-	m_Particle.VelocityVariation = { 3.0f, 1.0f };
-	m_Particle.Position = { 0.0f, 0.0f };
-
-	m_CameraController.SetZoomLevel(5.0f);
 }
 
 void Sandbox2D::OnAttach()
@@ -62,6 +39,32 @@ void Sandbox2D::OnAttach()
 
 	Layer::OnAttach();
 
+	m_BackgroundTexture = Hazel::Texture2D::Create("assets/textures/batthern.png");
+	m_FrontTexture = Hazel::Texture2D::Create("assets/textures/ChernoLogo.png");
+	//m_SpriteSheet = Hazel::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
+
+	//m_MapWidth = s_MapWidth;
+	//m_MapHeight = strlen(s_MapTiles) / s_MapWidth;
+
+	//m_TextureStairs = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 11, 11 }, { 128.0f, 128.0f }, { 1.0f, 1.0f });
+
+	//// 水
+	//m_TextureMap['w'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 11, 11 }, { 128.0f, 128.0f }, { 1.0f, 1.0f });
+	//// 陆地
+	//m_TextureMap['d'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 6, 11 }, { 128.0f, 128.0f }, { 1.0f, 1.0f });
+	//// 树
+	//m_TextureMap['t'] = Hazel::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 1, 11 }, { 128.0f, 128.0f }, { 1.0f, 1.0f });
+
+	//m_Particle.Velocity = { 0.0f, 0.0f };
+	//m_Particle.VelocityVariation = { 3.0f, 1.0f };
+	//m_Particle.Position = { 0.0f, 0.0f };
+
+	m_CameraController.SetZoomLevel(5.0f);
+
+	Hazel::FrameBufferSpecification fbSpec;
+	fbSpec.Width = 1280;
+	fbSpec.Height = 720;
+	m_FrameBuffer = Hazel::FrameBuffer::Create(fbSpec);
 }
 
 void Sandbox2D::OnDetach()
@@ -77,25 +80,23 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 
 	Layer::OnUpdate(timeStep);
 
-	m_Particle.ColorBegin = m_ParticleColorBegin;
+	/*m_Particle.ColorBegin = m_ParticleColorBegin;
 	m_Particle.ColorEnd = m_ParticleColorEnd;
 	m_Particle.SizeBegin = m_ParticleBeginSize;
 	m_Particle.SizeEnd = m_ParticleEndSize;
-	m_Particle.SizeVariation = m_ParticleSizeVariation;
+	m_Particle.SizeVariation = m_ParticleSizeVariation;*/
 
 	// Update
-	{
-		HZ_PROFILE_SCOPE("CameraController::OnUpdate");
-		m_CameraController.OnUpdate(timeStep);
-	}
+	m_CameraController.OnUpdate(timeStep);
 
 
 	// Renderer
-
 	Hazel::Renderer2D::ResetStarts();
 
 	{
 		HZ_PROFILE_SCOPE("Renderer Prep");
+		m_FrameBuffer->Bind();
+
 		Hazel::RenderCommand::SetClearColor({ .1f, .1f, .1f, 1 });
 		Hazel::RenderCommand::Clear();
 	}
@@ -111,9 +112,6 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 
 		Hazel::Renderer2D::DrawQuad( { -2.5f, 0.0f, -0.1f }, { 1.5f, 1.5f }, m_Rotation2, m_BackgroundTexture, m_TilingFactor);
 
-		Hazel::Renderer2D::EndScene();
-
-		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 		for (float y = -5.0f; y < 5.0f; y += 0.5f)
 		{
 			for (float x = -5.0f; x < 5.0f; x+=0.5f)
@@ -123,9 +121,11 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 			}
 		}
 		Hazel::Renderer2D::EndScene();
+		m_FrameBuffer->UnBind();
 	}
 
-	if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
+	///////////////////////////////////粒子绘制////////////////////////////////////////////////////
+	/*if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
 	{
 		auto [x, y] = Hazel::Input::GetMousePosition();
 		auto width = Hazel::Application::Get().GetWindow().GetWidth();
@@ -146,8 +146,11 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 	m_ParticleSystem.OnUpdate(timeStep);
 	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	m_ParticleSystem.OnRender();
-	Hazel::Renderer2D::EndScene();
+	Hazel::Renderer2D::EndScene();*/
+	//////////////////////////////////////////////////////////////////////////////////////////
 
+
+	//////////////////////////////////地图绘制/////////////////////////////////////////////////////
 	//Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
 	//Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, 0.5f }, { 1.0f, 1.0f }, m_TextureStairs);
 
@@ -171,7 +174,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep timeStep)
 	//}
 
 	//Hazel::Renderer2D::EndScene();
-
+	//////////////////////////////////////////////////////////////////////////////////////////
 }
 
 void Sandbox2D::OnImGuiRender()
@@ -196,86 +199,118 @@ void Sandbox2D::OnImGuiRender()
 
 	ImGui::End();*/
 
-	static bool p_open = true;
-	static bool opt_fullscreen = true;
-	static bool opt_padding = false;
-	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-	
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-	if (opt_fullscreen)
+	static bool dockingEnabled = true;
+
+	if (dockingEnabled)
 	{
-		const ImGuiViewport* viewport = ImGui::GetMainViewport();
-		ImGui::SetNextWindowPos(viewport->WorkPos);
-		ImGui::SetNextWindowSize(viewport->WorkSize);
-		ImGui::SetNextWindowViewport(viewport->ID);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+		static bool p_open = true;
+		static bool opt_fullscreen = true;
+		static bool opt_padding = false;
+		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		if (opt_fullscreen)
+		{
+			const ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImGui::SetNextWindowPos(viewport->WorkPos);
+			ImGui::SetNextWindowSize(viewport->WorkSize);
+			ImGui::SetNextWindowViewport(viewport->ID);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+		}
+		else
+		{
+			dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
+		}
+
+		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+			window_flags |= ImGuiWindowFlags_NoBackground;
+
+		if (!opt_padding)
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::Begin("DockSpace Demo", &p_open, window_flags);
+		if (!opt_padding)
+			ImGui::PopStyleVar();
+
+		if (opt_fullscreen)
+			ImGui::PopStyleVar(2);
+
+		// Submit the DockSpace
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+		{
+			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+		}
+
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Exit"))
+				{
+					Hazel::Application::Get().Close();
+				}
+
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
+		ImGui::Begin("Settings");
+		ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor1));
+		ImGui::ColorEdit4("Square Color2", glm::value_ptr(m_SquareColor2));
+		ImGui::DragFloat("TilingFactor", &m_TilingFactor, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("Rotation1", &m_Rotation1, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("Rotation2", &m_Rotation2, 1.0f, 0.0f, 360.0f);
+		ImGui::ColorEdit4("Square Color3", glm::value_ptr(m_SquareColor3));
+		ImGui::ColorEdit4("Square Color4", glm::value_ptr(m_SquareColor4));
+
+		ImGui::NewLine();
+
+		auto stats = Hazel::Renderer2D::GetStarts();
+		ImGui::Text("Renderer2D Starts:");
+		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+		ImGui::Text("QuadCounts: %d", stats.QuadCount);
+		ImGui::Text("Vertices: %d", stats.GetTotalIndexCount());
+		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+		const uint32_t textureID = m_FrameBuffer->GetColorAttachmentRenderer2D();
+		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ 1280, 720 });
+
+		ImGui::End();
+
+		ImGui::End();
 	}
 	else
 	{
-		dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
+		ImGui::Begin("Settings");
+		
+		ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor1));
+		ImGui::ColorEdit4("Square Color2", glm::value_ptr(m_SquareColor2));
+		ImGui::DragFloat("TilingFactor", &m_TilingFactor, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("Rotation1", &m_Rotation1, 1.0f, 0.0f, 100.0f);
+		ImGui::DragFloat("Rotation2", &m_Rotation2, 1.0f, 0.0f, 360.0f);
+		ImGui::ColorEdit4("Square Color3", glm::value_ptr(m_SquareColor3));
+		ImGui::ColorEdit4("Square Color4", glm::value_ptr(m_SquareColor4));
+
+		ImGui::NewLine();
+
+		auto stats = Hazel::Renderer2D::GetStarts();
+		ImGui::Text("Renderer2D Starts:");
+		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+		ImGui::Text("QuadCounts: %d", stats.QuadCount);
+		ImGui::Text("Vertices: %d", stats.GetTotalIndexCount());
+		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+		const uint32_t textureID = m_BackgroundTexture->GetRendererID();
+		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ 1280, 720 });
+
+		ImGui::End();
 	}
 	
-	if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-		window_flags |= ImGuiWindowFlags_NoBackground;
-	
-	if (!opt_padding)
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::Begin("DockSpace Demo", &p_open, window_flags);
-	if (!opt_padding)
-		ImGui::PopStyleVar();
-
-	if (opt_fullscreen)
-		ImGui::PopStyleVar(2);
-
-	// Submit the DockSpace
-	ImGuiIO& io = ImGui::GetIO();
-	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-	{
-		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-	}
-
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Exit"))
-			{
-				Hazel::Application::Get().Close();
-			}
-			
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-
-	ImGui::Begin("Settings");
-	ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor1));
-	ImGui::ColorEdit4("Square Color2", glm::value_ptr(m_SquareColor2));
-	ImGui::DragFloat("TilingFactor", &m_TilingFactor, 1.0f, 0.0f, 100.0f);
-	ImGui::DragFloat("Rotation1", &m_Rotation1, 1.0f, 0.0f, 100.0f);
-	ImGui::DragFloat("Rotation2", &m_Rotation2, 1.0f, 0.0f, 360.0f);
-	ImGui::ColorEdit4("Square Color3", glm::value_ptr(m_SquareColor3));
-	ImGui::ColorEdit4("Square Color4", glm::value_ptr(m_SquareColor4));
-
-	ImGui::NewLine();
-
-	auto stats = Hazel::Renderer2D::GetStarts();
-	ImGui::Text("Renderer2D Starts:");
-	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-	ImGui::Text("QuadCounts: %d", stats.QuadCount);
-	ImGui::Text("Vertices: %d", stats.GetTotalIndexCount());
-	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-	const uint32_t textureID = m_BackgroundTexture->GetRendererID();
-	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ 64.0f, 64.0f });
-
-	ImGui::End();
-
-	ImGui::End();
 
 }
 
