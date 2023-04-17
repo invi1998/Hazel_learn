@@ -65,10 +65,10 @@ namespace Hazel
 			HZ_PROFILE_SCOPE("Renderer Draw");
 			Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-			Renderer2D::DrawQuad({ 0.5f, -0.5f , -0.5f }, { 0.5f, 0.75f }, m_SquareColor);
-			Renderer2D::DrawQuad({ -0.5f, 0.1f }, { 0.75f, 0.35f }, m_SquareColor);
-			Renderer2D::DrawQuad({ -0.0f, -0.0f, -0.7f }, { 50.5f, 50.5f }, m_BackgroundTexture, 1000.0f);
-			Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.2f }, { 0.8f, 0.8f }, m_BackgroundTexture);
+			Renderer2D::DrawQuad({ 0.7f, -0.5f , 0.5f }, { 1.5f, 1.75f }, 48.0f, {0.35f, 0.12f, 0.95f, 1.0f});
+			Renderer2D::DrawQuad({ -0.5f, 0.1f }, { 1.75f, 1.35f }, m_SquareColor);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.7f }, { 50.5f, 50.5f }, m_BackgroundTexture, 1000.0f);
+			Renderer2D::DrawQuad({ 0.0f, 0.7f, 0.2f }, { 1.0f, 1.0f }, m_BackgroundTexture, 10.0f);
 
 			Renderer2D::DrawQuad({ -2.5f, 0.0f, 0.8f }, { 1.5f, 1.5f }, rotation, m_BackgroundTexture, 10.0f);
 
@@ -169,7 +169,7 @@ namespace Hazel
 		Application::Get().GetImGuiLayer()->SetBlockEvent(!m_ViewportFocused || !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if (m_ViewportSize != *reinterpret_cast<glm::vec2*>(&viewportPanelSize))
+		if (m_ViewportSize != *reinterpret_cast<glm::vec2*>(&viewportPanelSize) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
 		{
 			m_FrameBuffer->Resize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
 			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };

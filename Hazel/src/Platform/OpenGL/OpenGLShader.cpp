@@ -13,7 +13,7 @@ namespace Hazel
 		if (type == "vertex") return GL_VERTEX_SHADER;
 		if (type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
 
-		HZ_CORE_ASSERT(false, "Unkown shader type {0}", type);
+		HZ_CORE_ASSERT(false, "Unkown shader type");
 		return 0;
 	}
 
@@ -252,7 +252,7 @@ namespace Hazel
 
 				// Use the infoLog as you see fit.
 				HZ_CORE_ERROR("{0}", infoLog.data());
-				HZ_CORE_ASSERT(false, "{0} shader compliation failure!", type);
+				HZ_CORE_ASSERT(false, "shader compliation failure!");
 
 				// In this simple program, we'll just leave
 				break;
