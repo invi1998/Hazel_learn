@@ -42,9 +42,11 @@ namespace Hazel
 		Layer::OnUpdate(timeStep);
 
 		// Update
-		m_CameraController.OnUpdate(timeStep);
-
-
+		if (m_ViewportFocused)
+		{
+			m_CameraController.OnUpdate(timeStep);
+		}
+		
 		// Renderer
 		Renderer2D::ResetStarts();
 
@@ -55,7 +57,7 @@ namespace Hazel
 			RenderCommand::SetClearColor({ .1f, .1f, .1f, 1 });
 			RenderCommand::Clear();
 		}
-
+		
 		{
 			static float rotation = 0.0f;
 			rotation += timeStep * 50.0f;
@@ -161,6 +163,11 @@ namespace Hazel
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 		ImGui::Begin("ViewPort");
+
+		m_ViewportFocused = ImGui::IsWindowFocused();
+		m_ViewportHovered = ImGui::IsWindowHovered();
+		Application::Get().GetImGuiLayer()->SetBlockEvent(!m_ViewportFocused || !m_ViewportHovered);
+
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		if (m_ViewportSize != *reinterpret_cast<glm::vec2*>(&viewportPanelSize))
 		{

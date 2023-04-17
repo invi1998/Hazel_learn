@@ -32,6 +32,8 @@ namespace Hazel
 
 		inline static Application& Get() { return *s_Instance; }
 
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);

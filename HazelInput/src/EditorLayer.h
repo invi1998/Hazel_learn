@@ -20,13 +20,15 @@ namespace Hazel
 	private:
 		OrthographicCameraController m_CameraController;
 
+		bool m_ViewportFocused = false;
+		bool m_ViewportHovered = false;
+
 		std::shared_ptr<Shader> m_FlatShader;
 		std::shared_ptr<VertexArray> m_SquareVA;
 		std::shared_ptr<Texture2D> m_BackgroundTexture;
 		std::shared_ptr<FrameBuffer> m_FrameBuffer;
 
 		glm::vec2 m_ViewportSize = { 0.0, 0.0f };
-
 		glm::vec4 m_SquareColor = { 0.1f, 0.23f, 0.88f, 1.0f };
 	};
 }
