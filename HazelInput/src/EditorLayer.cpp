@@ -29,10 +29,10 @@ namespace Hazel
 
 		m_ActiveScene = std::make_shared<Scene>();
 
-		m_SquaredEntity = m_ActiveScene->CreateEntity();
-
-		m_ActiveScene->Reg().emplace<TransformComponent>(m_SquaredEntity);
-		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(m_SquaredEntity, m_SquareColor);
+		// Entity
+		m_SquaredEntity = m_ActiveScene->CreateEntity("Square");
+		
+		m_SquaredEntity.AddComponent<SpriteRendererComponent>(m_SquareColor);
 	}
 
 	void EditorLayer::OnDetach()
@@ -136,11 +136,6 @@ namespace Hazel
 		}
 
 		ImGui::Begin("Settings");
-		ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor));
-
-		m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquaredEntity).Color = m_SquareColor;
-
-		ImGui::NewLine();
 
 		auto stats = Renderer2D::GetStarts();
 		ImGui::Text("Renderer2D Starts:");
@@ -148,6 +143,19 @@ namespace Hazel
 		ImGui::Text("QuadCounts: %d", stats.QuadCount);
 		ImGui::Text("Vertices: %d", stats.GetTotalIndexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+		if (m_SquaredEntity)
+		{
+			ImGui::Separator();
+			auto tag = m_SquaredEntity.GetComponent<TagComponent>().Tag;
+			ImGui::Text("%s", tag.c_str());
+
+			ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor));
+			m_SquaredEntity.GetComponent<SpriteRendererComponent>().Color = m_SquareColor;
+			ImGui::Separator();
+		}
+
+		ImGui::NewLine();
 
 		ImGui::End();
 
