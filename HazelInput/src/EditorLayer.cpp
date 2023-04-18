@@ -26,6 +26,13 @@ namespace Hazel
 		fbSpec.Width = 1280;
 		fbSpec.Height = 720;
 		m_FrameBuffer = FrameBuffer::Create(fbSpec);
+
+		m_ActiveScene = std::make_shared<Scene>();
+
+		m_SquaredEntity = m_ActiveScene->CreateEntity();
+
+		m_ActiveScene->Reg().emplace<TransformComponent>(m_SquaredEntity);
+		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(m_SquaredEntity, m_SquareColor);
 	}
 
 	void EditorLayer::OnDetach()
@@ -46,43 +53,24 @@ namespace Hazel
 		{
 			m_CameraController.OnUpdate(timeStep);
 		}
-		
+
 		// Renderer
 		Renderer2D::ResetStarts();
-
-		{
-			HZ_PROFILE_SCOPE("Renderer Prep");
-			m_FrameBuffer->Bind();
-
-			RenderCommand::SetClearColor({ .1f, .1f, .1f, 1 });
-			RenderCommand::Clear();
-		}
 		
-		{
-			static float rotation = 0.0f;
-			rotation += timeStep * 50.0f;
+		m_FrameBuffer->Bind();
 
-			HZ_PROFILE_SCOPE("Renderer Draw");
-			Renderer2D::BeginScene(m_CameraController.GetCamera());
+		RenderCommand::SetClearColor({ .1f, .1f, .1f, 1 });
+		RenderCommand::Clear();
 
-			Renderer2D::DrawQuad({ 0.7f, -0.5f , 0.5f }, { 1.5f, 1.75f }, 48.0f, {0.35f, 0.12f, 0.95f, 1.0f});
-			Renderer2D::DrawQuad({ -0.5f, 0.1f }, { 1.75f, 1.35f }, m_SquareColor);
-			Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.7f }, { 50.5f, 50.5f }, m_BackgroundTexture, 1000.0f);
-			Renderer2D::DrawQuad({ 0.0f, 0.7f, 0.2f }, { 1.0f, 1.0f }, m_BackgroundTexture, 10.0f);
+		Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-			Renderer2D::DrawQuad({ -2.5f, 0.0f, 0.8f }, { 1.5f, 1.5f }, rotation, m_BackgroundTexture, 10.0f);
+		// update scene
+		m_ActiveScene->OnUpdate(timeStep);
 
-			for (float y = -5.0f; y < 5.0f; y += 0.5f)
-			{
-				for (float x = -5.0f; x < 5.0f; x += 0.5f)
-				{
-					glm::vec4 color = { (x + 5.0f) / 10.0f, 0.23f, (y + 5.0f) / 10.0f, 1.0f };
-					Renderer2D::DrawQuad({ x, y }, { 0.49f, 0.49f }, color);
-				}
-			}
-			Renderer2D::EndScene();
-			m_FrameBuffer->UnBind();
-		}
+		Renderer2D::EndScene();
+
+		m_FrameBuffer->UnBind();
+		
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -149,6 +137,8 @@ namespace Hazel
 
 		ImGui::Begin("Settings");
 		ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor));
+
+		m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquaredEntity).Color = m_SquareColor;
 
 		ImGui::NewLine();
 
