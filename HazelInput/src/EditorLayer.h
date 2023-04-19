@@ -30,6 +30,10 @@ namespace Hazel
 
 		std::shared_ptr<Scene> m_ActiveScene;
 		Entity m_SquaredEntity;
+		Entity m_CameraEntity;
+		Entity m_SecondCamera;
+
+		bool m_PrimaryCamera = false;
 
 		glm::vec2 m_ViewportSize = { 0.0, 0.0f };
 		glm::vec4 m_SquareColor = { 0.1f, 0.23f, 0.88f, 1.0f };

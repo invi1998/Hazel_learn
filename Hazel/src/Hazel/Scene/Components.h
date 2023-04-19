@@ -1,4 +1,6 @@
 #pragma once
+#include "Hazel/Renderer/Camera.h"
+#include "Hazel/Renderer/OrthographicCamera.h"
 
 namespace Hazel
 {
@@ -36,6 +38,18 @@ namespace Hazel
 
 		/*operator glm::vec4& () { return Color; }
 		operator const glm::vec4& () const { return Color; }*/
+
+	};
+
+	struct CameraComponent
+	{
+		Camera Camera;
+		bool Primary = true;
+
+		CameraComponent() = delete;
+		CameraComponent(const CameraComponent&) = default;
+
+		CameraComponent(const glm::mat4& projection) : Camera(projection) {}
 
 	};
 }
