@@ -47,7 +47,7 @@ namespace Hazel
 		bool Primary = true;
 		bool FixedAspectRadio = false;
 
-		CameraComponent() = delete;
+		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 
 	};

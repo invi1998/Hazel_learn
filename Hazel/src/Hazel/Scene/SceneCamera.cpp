@@ -30,7 +30,7 @@ namespace Hazel
 		float orthoLeft = -m_OrthographicSize * m_AspectRadio * 0.5f;
 		float orthoRight = m_OrthographicSize * m_AspectRadio * 0.5f;
 		float orthoBottom = -m_OrthographicSize * 0.5f;
-		float orthoTop = -m_OrthographicSize * 0.5f;
+		float orthoTop = m_OrthographicSize * 0.5f;
 
 		m_Projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, m_OrthographicNear, m_OrthographicFar);
 	}
