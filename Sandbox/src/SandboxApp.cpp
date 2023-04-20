@@ -27,23 +27,22 @@ public:
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.3f, 0.7f, 1.0f,
 			0.5f, -0.5f, 0.0f, 0.1f, 0.7f, 0.3f, 1.0f,
-			0.0f, 0.5f, 0.0f, 0.2f, 0.2f, 0.8f, 1.0f
-		};
+			0.0f, 0.5f, 0.0f, 0.2f, 0.2f, 0.8f, 1.0f};
 
 		std::shared_ptr<Hazel::VertexBuffer> vertexB = Hazel::VertexBuffer::Create(vertices, sizeof(vertices));
 
 		const Hazel::BufferLayout layouts = {
-			{Hazel::ShaderDataType::Float3, "a_Position"},		// 位置
-			{Hazel::ShaderDataType::Float4, "a_Color"}		// 颜色
-			// {ShaderDataType::Float3, "a_Normal"}		// 法线
+			{Hazel::ShaderDataType::Float3, "a_Position"}, // 位置
+			{Hazel::ShaderDataType::Float4, "a_Color"}	   // 颜色
+														   // {ShaderDataType::Float3, "a_Normal"}		// 法线
 		};
 
 		vertexB->SetLayout(layouts);
 
 		m_VertexArray->AddVertexBuffer(vertexB);
 
-		uint32_t indices[3] = { 0, 1, 2 };
-		std::shared_ptr<Hazel::IndexBuffer> indexB =Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+		uint32_t indices[3] = {0, 1, 2};
+		std::shared_ptr<Hazel::IndexBuffer> indexB = Hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
 		m_VertexArray->SetIndexBuffer(indexB);
 
@@ -52,16 +51,13 @@ public:
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
 			0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 			0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f
-		};
+			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f};
 		std::shared_ptr<Hazel::VertexBuffer> squaredVB = Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
-		squaredVB->SetLayout({
-			{Hazel::ShaderDataType::Float3, "a_Position"},
-			{Hazel::ShaderDataType::Float2, "a_TexCoord"}
-			});
+		squaredVB->SetLayout({{Hazel::ShaderDataType::Float3, "a_Position"},
+							  {Hazel::ShaderDataType::Float2, "a_TexCoord"}});
 		m_SquareVA->AddVertexBuffer(squaredVB);
 
-		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
+		uint32_t squareIndices[6] = {0, 1, 2, 2, 3, 0};
 		std::shared_ptr<Hazel::IndexBuffer> squaredIB = Hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		m_SquareVA->SetIndexBuffer(squaredIB);
 
@@ -149,31 +145,31 @@ public:
 	{
 		m_CameraController.OnUpdate(timeStep);
 
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_I))
+		if (Hazel::Input::IsKeyPressed(Hazel::Key::I))
 		{
 			m_SquarePosition.y += m_SquareMoveSpeed * timeStep;
 		}
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_K))
+		else if (Hazel::Input::IsKeyPressed(Hazel::Key::K))
 		{
 			m_SquarePosition.y -= m_SquareMoveSpeed * timeStep;
 		}
 
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_J))
+		if (Hazel::Input::IsKeyPressed(Hazel::Key::J))
 		{
 			m_SquarePosition.x -= m_SquareMoveSpeed * timeStep;
 		}
-		else if (Hazel::Input::IsKeyPressed(HZ_KEY_L))
+		else if (Hazel::Input::IsKeyPressed(Hazel::Key::L))
 		{
 			m_SquarePosition.x += m_SquareMoveSpeed * timeStep;
 		}
 
-		Hazel::RenderCommand::SetClearColor({ .1f, .1f, .1f, 1 });
+		Hazel::RenderCommand::SetClearColor({.1f, .1f, .1f, 1});
 		Hazel::RenderCommand::Clear();
 
 		Hazel::Renderer::BeginScene(m_CameraController.GetCamera());
 
-		//glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, m_SquarePosition);
-		glm::mat4 scale = glm::scale(glm::mat4{ 1.0f }, glm::vec3{0.1f});
+		// glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, m_SquarePosition);
+		glm::mat4 scale = glm::scale(glm::mat4{1.0f}, glm::vec3{0.1f});
 
 		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatShader)->Bind();
 
@@ -181,9 +177,9 @@ public:
 		{
 			for (int x = 0; x < 20; ++x)
 			{
-				glm::vec3 pos{ x * 0.11f, y*0.11f, 0.0f};
-				glm::mat4 transform = glm::translate(glm::mat4{ 1.0f }, pos) * scale;
-				if (x%2 == 0 && y%2 != 0 || x%2 != 0 && y%2 == 0)
+				glm::vec3 pos{x * 0.11f, y * 0.11f, 0.0f};
+				glm::mat4 transform = glm::translate(glm::mat4{1.0f}, pos) * scale;
+				if (x % 2 == 0 && y % 2 != 0 || x % 2 != 0 && y % 2 == 0)
 				{
 					std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_FlatShader)->UploadUniformFloat4("u_Color", m_SquareColor1);
 				}
@@ -215,12 +211,12 @@ public:
 		ImGui::End();
 	}
 
-	void OnEvent(Hazel::Event& event) override
+	void OnEvent(Hazel::Event &event) override
 	{
 		m_CameraController.OnEvent(event);
 	}
 
-	bool OnkeyPressedEvent(Hazel::KeyPressedEvent& event)
+	bool OnkeyPressedEvent(Hazel::KeyPressedEvent &event)
 	{
 	}
 
@@ -245,7 +241,6 @@ private:
 
 	glm::vec4 m_SquareColor1;
 	glm::vec4 m_SquareColor2;
-
 };
 
 class Sandbox : public Hazel::Application
@@ -257,10 +252,10 @@ public:
 		PushLayer(new Sandbox2D());
 	}
 
-	~Sandbox(){}
+	~Sandbox() {}
 };
 
-Hazel::Application* Hazel::CreateApplication()
+Hazel::Application *Hazel::CreateApplication()
 {
 	return new Sandbox;
 }

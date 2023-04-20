@@ -8,7 +8,7 @@
 
 namespace Hazel
 {
-	EditorLayer::EditorLayer() :Layer("EditorLayer"), m_CameraController(1920.f / 1080.f, true)
+	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_CameraController(1920.f / 1080.f, true)
 	{
 	}
 
@@ -37,7 +37,7 @@ namespace Hazel
 		m_CameraEntity.AddComponent<CameraComponent>();
 
 		m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Space Entity");
-		auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
+		auto &cc = m_SecondCamera.AddComponent<CameraComponent>();
 		cc.Primary = false;
 
 		class CameraController : public ScriptableEntity
@@ -45,35 +45,32 @@ namespace Hazel
 		public:
 			void OnCreate()
 			{
-				auto& transform = GetCompnent<TransformComponent>().Transform;
+				auto &transform = GetCompnent<TransformComponent>().Transform;
 				transform[3][0] = rand() % 10 - 0.5f;
 			}
 
 			void OnDestroy()
 			{
-				
 			}
 
 			void OnUpdate(Timestep ts)
 			{
-				auto& transform = GetCompnent<TransformComponent>().Transform;
+				auto &transform = GetCompnent<TransformComponent>().Transform;
 				float spead = 5.0f;
 
-				if (Input::IsKeyPressed(HZ_KEY_W))
+				if (Input::IsKeyPressed(Key::W))
 					transform[3][1] += spead * ts;
-				if (Input::IsKeyPressed(HZ_KEY_S))
+				if (Input::IsKeyPressed(Key::S))
 					transform[3][1] -= spead * ts;
-				if (Input::IsKeyPressed(HZ_KEY_A))
+				if (Input::IsKeyPressed(Key::A))
 					transform[3][0] -= spead * ts;
-				if (Input::IsKeyPressed(HZ_KEY_D))
+				if (Input::IsKeyPressed(Key::D))
 					transform[3][0] += spead * ts;
 			}
-
 		};
 
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
 	}
 
 	void EditorLayer::OnDetach()
@@ -106,17 +103,16 @@ namespace Hazel
 
 		// Renderer
 		Renderer2D::ResetStarts();
-		
+
 		m_FrameBuffer->Bind();
 
-		RenderCommand::SetClearColor({ .1f, .1f, .1f, 1 });
+		RenderCommand::SetClearColor({.1f, .1f, .1f, 1});
 		RenderCommand::Clear();
 
 		// update scene
 		m_ActiveScene->OnUpdate(timeStep);
 
 		m_FrameBuffer->UnBind();
-		
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -124,7 +120,7 @@ namespace Hazel
 		Layer::OnImGuiRender();
 
 		HZ_PROFILE_FUNCTION();
-		
+
 		static bool p_open = true;
 		static bool opt_fullscreen = true;
 		static bool opt_padding = false;
@@ -133,7 +129,7 @@ namespace Hazel
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		if (opt_fullscreen)
 		{
-			const ImGuiViewport* viewport = ImGui::GetMainViewport();
+			const ImGuiViewport *viewport = ImGui::GetMainViewport();
 			ImGui::SetNextWindowPos(viewport->WorkPos);
 			ImGui::SetNextWindowSize(viewport->WorkSize);
 			ImGui::SetNextWindowViewport(viewport->ID);
@@ -160,7 +156,7 @@ namespace Hazel
 			ImGui::PopStyleVar(2);
 
 		// Submit the DockSpace
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO &io = ImGui::GetIO();
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
@@ -210,7 +206,7 @@ namespace Hazel
 		}
 
 		{
-			auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
+			auto &camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
 			float orthoSize = camera.GetOrthographicSize();
 			if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
 			{
@@ -222,7 +218,7 @@ namespace Hazel
 
 		ImGui::End();
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
 		ImGui::Begin("ViewPort");
 
 		m_ViewportFocused = ImGui::IsWindowFocused();
@@ -230,28 +226,24 @@ namespace Hazel
 		Application::Get().GetImGuiLayer()->SetBlockEvent(!m_ViewportFocused || !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if (m_ViewportSize != *reinterpret_cast<glm::vec2*>(&viewportPanelSize) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
+		if (m_ViewportSize != *reinterpret_cast<glm::vec2 *>(&viewportPanelSize) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
 		{
 			m_FrameBuffer->Resize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
-			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+			m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
 			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 		}
 		const uint32_t textureID = m_FrameBuffer->GetColorAttachmentRenderer2D();
-		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+		ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
 		ImGui::End();
 		ImGui::PopStyleVar();
 
 		ImGui::End();
-
-
 	}
 
-	void EditorLayer::OnEvent(Event& event)
+	void EditorLayer::OnEvent(Event &event)
 	{
 		Layer::OnEvent(event);
 
 		m_CameraController.OnEvent(event);
 	}
 }
-
-

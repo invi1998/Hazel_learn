@@ -8,7 +8,7 @@
 namespace Hazel
 {
 	// 按键是否按下判断
-	bool Input::IsKeyPressed(int keycode)
+	bool Input::IsKeyPressed(const KeyCode keycode)
 	{
 		const auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		const auto state = glfwGetKey(window, keycode);
