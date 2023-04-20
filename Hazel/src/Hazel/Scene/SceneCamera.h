@@ -12,7 +12,7 @@ namespace Hazel
 		void SetOrthographic(float size, float nearClip, float farClip);
 		void SetViewportSize(uint32_t width, uint32_t height);
 
-		[[nodiscard]] float GetOrthographicSize() const { return m_OrthographicSize; }
+		float GetOrthographicSize() const { return m_OrthographicSize; }
 		void SetOrthographicSize(float size) { m_OrthographicSize = size; RecalculateProjection(); }
 
 	private:

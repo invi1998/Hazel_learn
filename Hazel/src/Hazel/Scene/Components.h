@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneCamera.h"
+#include "ScriptableEntity.h"
 #include "Hazel/Renderer/OrthographicCamera.h"
 
 namespace Hazel
@@ -50,5 +51,30 @@ namespace Hazel
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 
+	};
+
+	struct NativeScriptComponent
+	{
+		// 实体A中加入一个脚本组件，脚本组件关联B类， 那么NativeScriptComponent的作用就是让Entity在entt系统对B有访问权
+		// 同时让B类对实体A的其他组件也有访问权
+		ScriptableEntity* Instance = nullptr;
+
+		std::function<void()> InstantiateFunction;
+		std::function<void()> DestroyInstanceFunction;
+
+		std::function<void(ScriptableEntity*)> OnCreateFunction;
+		std::function<void(ScriptableEntity*)> OnDestroyFunction;
+		std::function<void(ScriptableEntity*, Timestep)> OnUpdateFunction;
+
+		template<typename T>
+		void Bind()
+		{
+			InstantiateFunction = [this]() { Instance = new T(); };
+			DestroyInstanceFunction = [this]() {delete static_cast<T*>(Instance); Instance = nullptr; };
+
+			OnCreateFunction = [](ScriptableEntity* Instance) {static_cast<T*>(Instance)->OnCreate(); };
+			OnDestroyFunction = [](ScriptableEntity* Instance) {static_cast<T*>(Instance)->OnDestroy(); };
+			OnUpdateFunction = [](ScriptableEntity* Instance, Timestep ts) {static_cast<T*>(Instance)->OnUpdate(ts); };
+		}
 	};
 }
