@@ -45,7 +45,8 @@ namespace Hazel
 		public:
 			void OnCreate()
 			{
-				HZ_CORE_WARN("Create");
+				auto& transform = GetCompnent<TransformComponent>().Transform;
+				transform[3][0] = rand() % 10 - 0.5f;
 			}
 
 			void OnDestroy()
@@ -70,6 +71,7 @@ namespace Hazel
 
 		};
 
+		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
 	}

@@ -59,22 +59,17 @@ namespace Hazel
 		// 同时让B类对实体A的其他组件也有访问权
 		ScriptableEntity* Instance = nullptr;
 
-		std::function<void()> InstantiateFunction;
-		std::function<void()> DestroyInstanceFunction;
+		using InstantiateScript = ScriptableEntity*(*)();
+		InstantiateScript InstantiateFunction;
 
-		std::function<void(ScriptableEntity*)> OnCreateFunction;
-		std::function<void(ScriptableEntity*)> OnDestroyFunction;
-		std::function<void(ScriptableEntity*, Timestep)> OnUpdateFunction;
+		using DestroyScript = void(*)(NativeScriptComponent*);
+		DestroyScript DestroyInstanceFunction;
 
 		template<typename T>
 		void Bind()
 		{
-			InstantiateFunction = [this]() { Instance = new T(); };
-			DestroyInstanceFunction = [this]() {delete static_cast<T*>(Instance); Instance = nullptr; };
-
-			OnCreateFunction = [](ScriptableEntity* Instance) {static_cast<T*>(Instance)->OnCreate(); };
-			OnDestroyFunction = [](ScriptableEntity* Instance) {static_cast<T*>(Instance)->OnDestroy(); };
-			OnUpdateFunction = [](ScriptableEntity* Instance, Timestep ts) {static_cast<T*>(Instance)->OnUpdate(ts); };
+			InstantiateFunction = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyInstanceFunction = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 	};
 }
