@@ -44,6 +44,19 @@ namespace Hazel
 		}
 
 		operator bool() const { return m_EntityHandle != entt::null; }
+		operator uint32_t() const { return static_cast<uint32_t>(m_EntityHandle); }
+
+		bool operator==(const Entity& e) const
+		{
+			return e.m_EntityHandle == m_EntityHandle && m_Scene == e.m_Scene;
+		}
+
+		bool operator!=(const Entity& e) const
+		{
+			return !(*this == e);
+			// or
+			// return !operator==(e);
+		}
 
 	private:
 		entt::entity m_EntityHandle{ entt::null };

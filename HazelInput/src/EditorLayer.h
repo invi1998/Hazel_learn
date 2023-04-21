@@ -2,6 +2,7 @@
 
 #include "Hazel.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Panels/SceneHierarchyPanel.h"
 
 namespace Hazel
 {
@@ -37,6 +38,9 @@ namespace Hazel
 
 		glm::vec2 m_ViewportSize = { 0.0, 0.0f };
 		glm::vec4 m_SquareColor = { 0.1f, 0.23f, 0.88f, 1.0f };
+
+		// panels
+		SceneHierarchyPanel m_SceneHierarchyPanel;
 	};
 }
 
