@@ -30,8 +30,13 @@ namespace Hazel
 		m_ActiveScene = std::make_shared<Scene>();
 
 		// Entity
-		m_SquaredEntity = m_ActiveScene->CreateEntity("Square");
-		m_SquaredEntity.AddComponent<SpriteRendererComponent>(m_SquareColor);
+		auto square = m_ActiveScene->CreateEntity("Color Editable Square");
+		square.AddComponent<SpriteRendererComponent>(m_SquareColor);
+
+		auto pinkSquare = m_ActiveScene->CreateEntity("Pink Square");
+		pinkSquare.AddComponent<SpriteRendererComponent>(glm::vec4{0.95f, 0.11f, 0.45f, 1.0f});
+
+		m_SquaredEntity = square;
 
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
 		m_CameraEntity.AddComponent<CameraComponent>();
