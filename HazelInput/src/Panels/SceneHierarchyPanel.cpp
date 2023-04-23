@@ -6,7 +6,7 @@
 #include <imgui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "imgui/imgui_internal.h"
+#include <imgui/imgui_internal.h>
 
 namespace Hazel
 {
@@ -23,27 +23,30 @@ namespace Hazel
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		m_Context->m_Registry.each([&](auto entityID)
+		if (m_Context)
+		{
+			m_Context->m_Registry.each([&](auto entityID)
 			{
 				Entity entity{ entityID, m_Context.get() };
 				DrawEntityNode(entity);
 			});
 
-		// 如果在我们到达这点之前，窗口中的一个项目已经处理了我们的点击，那这里就不会重复相应
-		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-		{
-			m_SelectionContext = {};
-		}
-
-		// 在黑屏处右键点击
-		if (ImGui::BeginPopupContextWindow(nullptr, 1))
-		{
-			if (ImGui::MenuItem("Create Empty Entity"))
+			// 如果在我们到达这点之前，窗口中的一个项目已经处理了我们的点击，那这里就不会重复相应
+			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			{
-				m_Context->CreateEntity("Empty Entity");
+				m_SelectionContext = {};
 			}
 
-			ImGui::EndPopup();
+			// 在黑屏处右键点击
+			if (ImGui::BeginPopupContextWindow(nullptr, 1))
+			{
+				if (ImGui::MenuItem("Create Empty Entity"))
+				{
+					m_Context->CreateEntity("Empty Entity");
+				}
+
+				ImGui::EndPopup();
+			}
 		}
 
 		ImGui::End();
@@ -53,6 +56,10 @@ namespace Hazel
 		if (m_SelectionContext)
 		{
 			DrawComponents(m_SelectionContext);
+			if (ImGui::Button("Add Component"))
+			{
+				ImGui::OpenPopup("AddComponent");
+			}
 		}
 
 		ImGui::End();
@@ -61,10 +68,11 @@ namespace Hazel
 
 	void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 	{
-		auto& tc = entity.GetComponent<TagComponent>().Tag;
+		auto& tag = entity.GetComponent<TagComponent>().Tag;
 
 		ImGuiTreeNodeFlags flags = (m_SelectionContext == entity ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-		bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<uint64_t>(static_cast<uint32_t>(entity))), flags, tc.c_str());
+		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+		bool opened = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<uint64_t>(static_cast<uint32_t>(entity))), flags, tag.c_str());
 
 		if (ImGui::IsItemClicked())
 		{
@@ -72,13 +80,12 @@ namespace Hazel
 		}
 
 		bool entityDeleted = false;
-		if (ImGui::BeginPopupContextItem())
+		if (ImGui::BeginPopupContextItem(nullptr, 2))
 		{
 			if (ImGui::MenuItem("Delete Entity"))
 			{
 				entityDeleted = true;
 			}
-
 			ImGui::EndPopup();
 		}
 
