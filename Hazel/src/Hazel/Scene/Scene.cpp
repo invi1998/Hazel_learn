@@ -102,4 +102,13 @@ namespace Hazel
 			}
 		}
 	}
+
+	void Scene::DestroyEntity(Entity entity)
+	{
+		// 我们这里传递进来的entity并不是一个entity实体，而只是一个Entity抽象,
+		// destroy需要一个entity实体，这里当然可以在Entity里写一个get函数
+		// 当然我们也可以重写 entity 运算符，如下
+		// operator entt::entity() const { return m_EntityHandle; }
+		m_Registry.destroy(entity);
+	}
 }

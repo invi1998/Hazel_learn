@@ -22,6 +22,8 @@ namespace Hazel
 
 		void OnViewportResize(uint32_t width, uint32_t height);
 
+		void DestroyEntity(Entity entity);
+
 	private:
 		entt::registry m_Registry;
 		uint32_t m_ViewportWidth = 0;
