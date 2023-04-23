@@ -39,7 +39,7 @@ namespace Hazel
 		}
 
 
-		// Render 2D sprites
+		// Render 2D
 		Camera* mainCamera = nullptr;
 		glm::mat4 cameraTransform;
 
@@ -52,7 +52,7 @@ namespace Hazel
 				if (camera.Primary)
 				{
 					mainCamera = &camera.Camera;
-					cameraTransform = transform.Transform;
+					cameraTransform = transform.GetTransform();
 					break;
 				}
 			}
@@ -67,7 +67,7 @@ namespace Hazel
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				Renderer2D::DrawQuad(transform, sprite.Color);
+				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
 			}
 
 			Renderer2D::EndScene();

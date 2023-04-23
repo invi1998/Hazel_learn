@@ -50,8 +50,8 @@ namespace Hazel
 		public:
 			void OnCreate()
 			{
-				auto &transform = GetCompnent<TransformComponent>().Transform;
-				transform[3][0] = rand() % 10 - 0.5f;
+				auto &translation = GetCompnent<TransformComponent>().Translation;
+				translation.x = rand() % 10 - 0.5f;
 			}
 
 			void OnDestroy()
@@ -60,17 +60,17 @@ namespace Hazel
 
 			void OnUpdate(Timestep ts)
 			{
-				auto &transform = GetCompnent<TransformComponent>().Transform;
+				auto & translation = GetCompnent<TransformComponent>().Translation;
 				float spead = 5.0f;
 
 				if (Input::IsKeyPressed(Key::W))
-					transform[3][1] += spead * ts;
+					translation.y += spead * ts;
 				if (Input::IsKeyPressed(Key::S))
-					transform[3][1] -= spead * ts;
+					translation.y -= spead * ts;
 				if (Input::IsKeyPressed(Key::A))
-					transform[3][0] -= spead * ts;
+					translation.x -= spead * ts;
 				if (Input::IsKeyPressed(Key::D))
-					transform[3][0] += spead * ts;
+					translation.x += spead * ts;
 			}
 		};
 
