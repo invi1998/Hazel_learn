@@ -30,18 +30,18 @@ namespace Hazel
 		m_ActiveScene = std::make_shared<Scene>();
 
 		// Entity
-		auto square = m_ActiveScene->CreateEntity("Color Editable Square");
-		square.AddComponent<SpriteRendererComponent>(m_SquareColor);
+		auto square = m_ActiveScene->CreateEntity("Blue Square");
+		square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.1f, 0.23f, 0.88f, 1.0f });
 
 		auto pinkSquare = m_ActiveScene->CreateEntity("Pink Square");
 		pinkSquare.AddComponent<SpriteRendererComponent>(glm::vec4{0.95f, 0.11f, 0.45f, 1.0f});
 
 		m_SquaredEntity = square;
 
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
+		m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
 		m_CameraEntity.AddComponent<CameraComponent>();
 
-		m_SecondCamera = m_ActiveScene->CreateEntity("Clip-Space Entity");
+		m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
 		auto &cc = m_SecondCamera.AddComponent<CameraComponent>();
 		cc.Primary = false;
 
@@ -186,7 +186,7 @@ namespace Hazel
 
 		m_SceneHierarchyPanel.OnImGuiRender();
 
-		ImGui::Begin("Settings");
+		ImGui::Begin("Renderer2d Stats");
 
 		auto stats = Renderer2D::GetStarts();
 		ImGui::Text("Renderer2D Starts:");
@@ -194,36 +194,6 @@ namespace Hazel
 		ImGui::Text("QuadCounts: %d", stats.QuadCount);
 		ImGui::Text("Vertices: %d", stats.GetTotalIndexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-		if (m_SquaredEntity)
-		{
-			ImGui::Separator();
-			const auto tag = m_SquaredEntity.GetComponent<TagComponent>().Tag;
-			ImGui::Text("%s", tag.c_str());
-
-			ImGui::ColorEdit4("Square Color1", glm::value_ptr(m_SquareColor));
-			m_SquaredEntity.GetComponent<SpriteRendererComponent>().Color = m_SquareColor;
-			ImGui::Separator();
-		}
-
-		ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
-
-		if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
-		{
-			m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-			m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-		}
-
-		{
-			auto &camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
-			float orthoSize = camera.GetOrthographicSize();
-			if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
-			{
-				camera.SetOrthographicSize(orthoSize);
-			}
-		}
-
-		ImGui::NewLine();
 
 		ImGui::End();
 

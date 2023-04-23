@@ -171,5 +171,15 @@ namespace Hazel
 				ImGui::TreePop();
 			}
 		}
+
+		if (entity.HasComponent<SpriteRendererComponent>())
+		{
+			if (ImGui::TreeNodeEx(reinterpret_cast<void*>(typeid(SpriteRendererComponent).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
+			{
+				auto& spriteColor = entity.GetComponent<SpriteRendererComponent>().Color;
+				ImGui::ColorEdit4("Color", glm::value_ptr(spriteColor));
+				ImGui::TreePop();
+			}
+		}
 	}
 }
