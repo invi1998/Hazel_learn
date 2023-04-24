@@ -14,3 +14,6 @@
 	path = Hazel/vendor/glm
 	url = https://github.com/invi1998/glm
 	branch = master
+[submodule "Hazel/vendor/yaml-cpp"]
+	path = Hazel/vendor/yaml-cpp
+	url = git@github.com:invi1998/yaml-cpp.git
