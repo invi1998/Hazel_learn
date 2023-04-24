@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Hazel/Core/Timestep.h"
 
 namespace Hazel
 {

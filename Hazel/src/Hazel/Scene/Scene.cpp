@@ -2,7 +2,7 @@
 
 #include "Scene.h"
 
-#include "Components.h"
+#include "Hazel/Scene/Components.h"
 #include "Hazel/Renderer/Renderer.h"
 #include "Hazel/Renderer/Renderer2D.h"
 #include "Hazel/Scene/Entity.h"
@@ -11,7 +11,7 @@ namespace Hazel
 {
 	Scene::Scene()
 	{
-		
+		// m_Registry.on_construct<CameraComponent>().connect<&Function>();
 	}
 
 	Scene::~Scene()
@@ -110,5 +110,38 @@ namespace Hazel
 		// 当然我们也可以重写 entity 运算符，如下
 		// operator entt::entity() const { return m_EntityHandle; }
 		m_Registry.destroy(entity);
+	}
+
+	template <typename T>
+	void Scene::OnComponentAdded(Entity entity, T& component)
+	{
+		static_assert(sizeof(T) == 0);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	{
+		if (m_ViewportWidth > 0 && m_ViewportHeight > 0)
+			component.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
 	}
 }
