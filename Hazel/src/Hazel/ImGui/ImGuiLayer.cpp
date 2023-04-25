@@ -33,9 +33,8 @@ namespace Hazel
 
 		// io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-medium.otf", 16.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
 		// io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-regular.otf", 16.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
-		io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-medium.otf", 16.0f);
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-regular.otf", 16.0f);
-
+		io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-medium.otf", 18.0f);
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-regular.otf", 18.0f);
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
