@@ -60,3 +60,7 @@ imgui.ini
 Hazel-Editor/*.json
 Hazelnut/*.json
 Sandbox/*.json
+
+**/HazelProfile-Runtime.json
+**/HazelProfile-Shutdown.json
+**/HazelProfile-Startup.json
