@@ -14,20 +14,19 @@
 
 namespace Hazel
 {
-	class HazelInput : public Application
+	class Hazelnut : public Application
 	{
 	public:
-		HazelInput() : Application("Hazel Editor")
+		Hazelnut() : Application("Hazel Editor")
 		{
 			PushLayer(new EditorLayer());
 		}
 
-		~HazelInput() {}
+		~Hazelnut() {}
 	};
 
-	Application* CreateApplication()
+	Application *CreateApplication()
 	{
-		return new HazelInput;
+		return new Hazelnut;
 	}
 }
-

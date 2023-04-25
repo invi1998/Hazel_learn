@@ -52,11 +52,11 @@ Intermediates/
 # Directories
 Hazel/vendor/VulkanSDK
 Hazel/vendor/**/bin/
-Hazelnut/assets/cache
+HazelInut/assets/cache
 scripts/__pycache__
 
 imgui.ini
 
 Hazel-Editor/*.json
-HazelInput/*.json
+Hazelnut/*.json
 Sandbox/*.json

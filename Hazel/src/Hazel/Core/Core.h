@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Hazel/Core/PlatformDetection.h"
+
 #include <memory>
 
 #ifdef HZ_DEBUG
