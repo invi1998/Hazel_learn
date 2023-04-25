@@ -4,6 +4,8 @@
 #include "imgui/imgui.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 
+#include "Hazel/Scene/SceneSerializer.h"
+
 #include <chrono>
 
 namespace Hazel
@@ -28,6 +30,8 @@ namespace Hazel
 		m_FrameBuffer = FrameBuffer::Create(fbSpec);
 
 		m_ActiveScene = std::make_shared<Scene>();
+
+#if 0
 
 		// Entity
 		auto square = m_ActiveScene->CreateEntity("Blue Square");
@@ -77,7 +81,10 @@ namespace Hazel
 		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
+#endif
+
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		
 	}
 
 	void EditorLayer::OnDetach()
@@ -179,6 +186,18 @@ namespace Hazel
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("Serialize"))
+				{
+					SceneSerializer serializer(m_ActiveScene);
+					serializer.Serialize("assets/scenes/Example.hazel");
+				}
+
+				if (ImGui::MenuItem("Deserialize"))
+				{
+					SceneSerializer serializer(m_ActiveScene);
+					serializer.Deserialize("assets/scenes/Example.hazel");
+				}
+
 				if (ImGui::MenuItem("Exit"))
 				{
 					Application::Get().Close();

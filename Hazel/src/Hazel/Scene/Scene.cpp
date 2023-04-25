@@ -23,24 +23,22 @@ namespace Hazel
 		// update scripts
 		{
 			m_Registry.view<NativeScriptComponent>().each(
-				[=](auto entity, auto& nsc)
+				[=](auto entity, auto &nsc)
 				{
 					// TODO: Move to Scene::OnScenePlay
-					if(!nsc.Instance)
+					if (!nsc.Instance)
 					{
 						nsc.Instance = nsc.InstantiateFunction();
-						nsc.Instance->m_Entity = Entity{ entity, this };
+						nsc.Instance->m_Entity = Entity{entity, this};
 						nsc.Instance->OnCreate();
 					}
 
 					nsc.Instance->OnUpdate(ts);
-				}
-			);
+				});
 		}
 
-
 		// Render 2D
-		Camera* mainCamera = nullptr;
+		Camera *mainCamera = nullptr;
 		glm::mat4 cameraTransform;
 
 		{
@@ -63,7 +61,7 @@ namespace Hazel
 			Renderer2D::BeginScene(*mainCamera, cameraTransform);
 
 			const auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-			for (const auto entity: group)
+			for (const auto entity : group)
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
@@ -72,15 +70,13 @@ namespace Hazel
 
 			Renderer2D::EndScene();
 		}
-
-		
 	}
 
-	Entity Scene::CreateEntity(const std::string& name)
+	Entity Scene::CreateEntity(const std::string &name)
 	{
-		Entity entity = { m_Registry.create(), this };
+		Entity entity = {m_Registry.create(), this};
 		entity.AddComponent<TransformComponent>();
-		auto& tag = entity.AddComponent<TagComponent>();
+		auto &tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
 
 		return entity;
@@ -91,12 +87,12 @@ namespace Hazel
 		m_ViewportWidth = width;
 		m_ViewportHeight = height;
 
-		// Resize our non-FixedAspectRadio Cameras
+		// Resize our non-FixedAspectRatio Cameras
 		auto view = m_Registry.view<CameraComponent>();
 		for (auto entity : view)
 		{
-			auto& cameraComponent = view.get<CameraComponent>(entity);
-			if (!cameraComponent.FixedAspectRadio)
+			auto &cameraComponent = view.get<CameraComponent>(entity);
+			if (!cameraComponent.FixedAspectRatio)
 			{
 				cameraComponent.Camera.SetViewportSize(width, height);
 			}
@@ -113,35 +109,35 @@ namespace Hazel
 	}
 
 	template <typename T>
-	void Scene::OnComponentAdded(Entity entity, T& component)
+	void Scene::OnComponentAdded(Entity entity, T &component)
 	{
 		static_assert(sizeof(T) == 0);
 	}
 
-	template<>
-	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	template <>
+	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent &component)
 	{
 	}
 
-	template<>
-	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	template <>
+	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent &component)
 	{
 		if (m_ViewportWidth > 0 && m_ViewportHeight > 0)
 			component.Camera.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 	}
 
-	template<>
-	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	template <>
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent &component)
 	{
 	}
 
-	template<>
-	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	template <>
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent &component)
 	{
 	}
 
-	template<>
-	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	template <>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent &component)
 	{
 	}
 }

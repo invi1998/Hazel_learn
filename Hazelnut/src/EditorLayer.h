@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Hazel.h"
+#include "Hazel/Scene/SceneSerializer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Panels/SceneHierarchyPanel.h"
 
@@ -40,6 +41,7 @@ namespace Hazel
 
 		// panels
 		SceneHierarchyPanel m_SceneHierarchyPanel;
+		
 	};
 }
 
