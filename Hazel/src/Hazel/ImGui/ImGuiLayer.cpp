@@ -31,8 +31,11 @@ namespace Hazel
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
+		// io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-medium.otf", 16.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+		// io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-regular.otf", 16.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
 		io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-medium.otf", 16.0f);
 		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/pingfang/pingfangtc-regular.otf", 16.0f);
+
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
