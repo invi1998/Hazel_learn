@@ -17,3 +17,6 @@
 [submodule "Hazel/vendor/yaml-cpp"]
 	path = Hazel/vendor/yaml-cpp
 	url = git@github.com:invi1998/yaml-cpp.git
+[submodule "Hazel/vendor/ImGuizmo"]
+	path = Hazel/vendor/ImGuizmo
+	url = git@github.com:invi1998/ImGuizmo.git
