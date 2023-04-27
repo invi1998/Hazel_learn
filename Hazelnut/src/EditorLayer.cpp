@@ -234,7 +234,7 @@ namespace Hazel
 
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
-		Application::Get().GetImGuiLayer()->SetBlockEvent(!m_ViewportFocused || !m_ViewportHovered);
+		Application::Get().GetImGuiLayer()->SetBlockEvent(!m_ViewportFocused && !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		if (m_ViewportSize != *reinterpret_cast<glm::vec2 *>(&viewportPanelSize) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
@@ -355,26 +355,31 @@ namespace Hazel
 			// Gizmos
 			case Key::Q:
 			{
-				m_GizmoType = -1;
+				if (!ImGuizmo::IsUsing())
+					m_GizmoType = -1;
 				break;
 			}
 			case Key::W:
 			{
-				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+				if (!ImGuizmo::IsUsing())
+					m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
 				break;
 			}
 			case Key::E:
 			{
-				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+				if (!ImGuizmo::IsUsing())
+					m_GizmoType = ImGuizmo::OPERATION::ROTATE;
 				break;
 			}
 			case Key::R:
 			{
-				m_GizmoType = ImGuizmo::OPERATION::SCALE;
+				if (!ImGuizmo::IsUsing())
+					m_GizmoType = ImGuizmo::OPERATION::SCALE;
 				break;
 			}
-
+		default: ;
 		}
+		return false;
 	}
 
 	void EditorLayer::NewScene()
