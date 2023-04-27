@@ -54,13 +54,18 @@ namespace Hazel
 		return s_Data.starts;
 	}
 
-	void Renderer2D::FlushAndReset()
+	void Renderer2D::StartBatch()
 	{
-		EndScene();
-
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
 		s_Data.TextureSlotIndex = 1;
+	}
+
+	void Renderer2D::NextBatch()
+	{
+		Flush();
+		StartBatch();
 	}
 
 	void Renderer2D::Init()
@@ -142,9 +147,19 @@ namespace Hazel
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 
-		s_Data.QuadIndexCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-		s_Data.TextureSlotIndex = 1;
+		StartBatch();
+	}
+
+	void Renderer2D::BeginScene(const EditorCamera& camera)
+	{
+		HZ_PROFILE_FUNCTION();
+
+		glm::mat4 viewProj = camera.GetViewProjection();
+
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
+
+		StartBatch();
 	}
 
 	void Renderer2D::BeginScene(const Camera& camera, const glm::mat4& transform)
@@ -158,9 +173,7 @@ namespace Hazel
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjection", viewPorj);
 
-		s_Data.QuadIndexCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-		s_Data.TextureSlotIndex = 1;
+		StartBatch();
 	}
 
 	void Renderer2D::EndScene()
@@ -199,7 +212,7 @@ namespace Hazel
 
 		if (s_Data.QuadIndexCount > Renderer2DData::MaxIndices)
 		{
-			FlushAndReset();
+			NextBatch();
 		}
 
 		constexpr size_t quadVertexCount = 4;
@@ -259,7 +272,7 @@ namespace Hazel
 
 		if (s_Data.QuadIndexCount > Renderer2DData::MaxIndices)
 		{
-			FlushAndReset();
+			NextBatch();
 		}
 
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -305,7 +318,7 @@ namespace Hazel
 
 		if (s_Data.QuadIndexCount > Renderer2DData::MaxIndices)
 		{
-			FlushAndReset();
+			NextBatch();
 		}
 
 		constexpr size_t quadVertexCount = 4;
@@ -339,7 +352,7 @@ namespace Hazel
 
 		if (s_Data.QuadIndexCount > Renderer2DData::MaxIndices)
 		{
-			FlushAndReset();
+			NextBatch();
 		}
 
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -395,7 +408,7 @@ namespace Hazel
 
 		if (s_Data.QuadIndexCount > Renderer2DData::MaxIndices)
 		{
-			FlushAndReset();
+			NextBatch();
 		}
 
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -450,7 +463,7 @@ namespace Hazel
 
 		if (s_Data.QuadIndexCount > Renderer2DData::MaxIndices)
 		{
-			FlushAndReset();
+			NextBatch();
 		}
 
 		float textureIndex = 0.0f;
@@ -491,7 +504,7 @@ namespace Hazel
 
 		if (s_Data.QuadIndexCount > Renderer2DData::MaxIndices)
 		{
-			FlushAndReset();
+			NextBatch();
 		}
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)

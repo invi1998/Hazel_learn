@@ -43,6 +43,8 @@ namespace Hazel
 
 		bool m_PrimaryCamera = false;
 
+		EditorCamera m_EditorCamera;
+
 		glm::vec2 m_ViewportSize = { 0.0, 0.0f };
 
 		int m_GizmoType = - 1;
