@@ -2,46 +2,28 @@ Scene: Untitled
 Entities:
   - Entity: 12345678
     TagComponent:
-      Tag: Camera
+      Tag: right
     TransformComponent:
-      Translation: [0, 1.60000002, 3]
-      Rotation: [-0.495673507, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 12345678
-    TagComponent:
-      Tag: top
-    TransformComponent:
-      Translation: [0, 0.5, -0.5]
-      Rotation: [1.57079613, -0.785398245, 4.21468513e-08]
-      Scale: [0.999999881, 1, 0.999914944]
+      Translation: [0.353995979, 0.00025747731, 0.353996128]
+      Rotation: [0, 0.785398245, 0]
+      Scale: [0.999981761, 0.999999881, 0.999981761]
     SpriteRendererComponent:
-      Color: [0.191359282, 0.451737463, 0.0872080103, 1]
+      Color: [0.172549024, 0.400000006, 0.0784313753, 0.858823538]
   - Entity: 12345678
     TagComponent:
       Tag: front
     TransformComponent:
-      Translation: [-0.347311497, -0.00324749947, -0.153608292]
+      Translation: [-0.35118863, -0.000933520496, 0.35118857]
       Rotation: [0, -0.785398245, 0]
       Scale: [0.999999881, 1, 0.999999881]
     SpriteRendererComponent:
-      Color: [0.254901975, 0.596078455, 0.117647059, 1]
+      Color: [0.254901975, 0.596078455, 0.117647059, 0.768627465]
   - Entity: 12345678
     TagComponent:
-      Tag: right
+      Tag: top
     TransformComponent:
-      Translation: [0.359841406, 0.000257611275, -0.152348384]
-      Rotation: [0, 0.785398245, 0]
-      Scale: [0.999963164, 0.999999881, 0.999963164]
+      Translation: [0, 0.5, 0]
+      Rotation: [1.57079613, -0.785398245, 4.21468513e-08]
+      Scale: [0.999999881, 1, 0.999914944]
     SpriteRendererComponent:
-      Color: [0.171204537, 0.401544392, 0.0790685937, 1]
+      Color: [0.192156866, 0.450980395, 0.0862745121, 0.866666675]

@@ -25,5 +25,10 @@ namespace Hazel
 		uint32_t m_DepthAttachment = 0;
 		FrameBufferSpecification m_Specification;
 
+		std::vector<FrameBufferTextureSpecification> m_ColorAttachmentSpecification;
+		FrameBufferTextureSpecification m_DepthAttachSpecification = FrameBufferTextureFormat::None;
+
+		std::vector<uint32_t> m_ColorAttachments;
+
 	};
 }
