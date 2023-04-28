@@ -6,6 +6,10 @@
 
 #include "glad/gl.h"
 
+#include <shaderc/shaderc.hpp>
+#include <spirv_cross/spirv_cross.hpp>
+#include <spirv_cross/spirv_glsl.hpp>
+
 namespace Hazel
 {
 	static GLenum ShaderTypeFromString(const std::string& type)
@@ -300,5 +304,24 @@ namespace Hazel
 
 		m_RenderID = program;
 
+	}
+
+	void OpenGLShader::CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources)
+	{
+		GLuint program = glCreateProgram();
+
+		shaderc::Compiler compiler;
+	}
+
+	void OpenGLShader::CompileOrGetOpenGLBinaries()
+	{
+	}
+
+	void OpenGLShader::CreateProgram()
+	{
+	}
+
+	void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t>& shaderData)
+	{
 	}
 }
