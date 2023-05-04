@@ -197,11 +197,6 @@ namespace Hazel
 		UploadUniformIntArray(name, values, count);
 	}
 
-	const std::string& OpenGLShader::GetName() const
-	{
-		return m_Name;
-	}
-
 	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 	{
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
@@ -311,9 +306,7 @@ namespace Hazel
 		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
 		const bool optimize = true;
 		if (optimize)
-		{
 			options.SetOptimizationLevel(shaderc_optimization_level_performance);
-		}
 
 		std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
 
@@ -347,7 +340,6 @@ namespace Hazel
 				shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
 
 				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
-
 				if (out.is_open())
 				{
 					auto& data = shaderData[stage];
@@ -358,7 +350,7 @@ namespace Hazel
 			}
 		}
 
-		for (auto &&[stage, data] : shaderData)
+		for (auto&& [stage, data] : shaderData)
 		{
 			Reflect(stage, data);
 		}
