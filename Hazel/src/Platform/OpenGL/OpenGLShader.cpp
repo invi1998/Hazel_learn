@@ -290,6 +290,7 @@ namespace Hazel
 
 
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+			HZ_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
 			pos = source.find(typeToken, nextLinePos);
 			shaderSources[Utils::ShaderTypeFromString(type)] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
 		}
@@ -306,7 +307,9 @@ namespace Hazel
 		options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
 		const bool optimize = true;
 		if (optimize)
+		{
 			options.SetOptimizationLevel(shaderc_optimization_level_performance);
+		}
 
 		std::filesystem::path cacheDirectory = Utils::GetCacheDirectory();
 

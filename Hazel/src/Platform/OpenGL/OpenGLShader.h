@@ -53,6 +53,8 @@ namespace Hazel
 		std::string m_Name;
 		std::string m_FilePath;
 
+		// m_VulkanSPIRVCache相当于一个缓存的unordered_map, key是子着色器类型
+		// value是一个uint32的数组, 代表着Spir-V对应的编译结果
 		std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
 		std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
 
