@@ -65,3 +65,4 @@ Sandbox/*.json
 **/HazelProfile-Runtime.json
 **/HazelProfile-Shutdown.json
 **/HazelProfile-Startup.json
+/Hazelnut/assets/cache/
