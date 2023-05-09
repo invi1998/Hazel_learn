@@ -1,0 +1,38 @@
+Scene: Untitled
+Entities:
+  - Entity: 12345678
+    TagComponent:
+      Tag: mian
+    TransformComponent:
+      Translation: [0, 0.690865993, -1.15067983]
+      Rotation: [-1.51905537, 0.124692924, -1.17622328]
+      Scale: [1, 0.999999881, 1]
+    SpriteRendererComponent:
+      Color: [0.934362948, 0.243351385, 0.0613288283, 1]
+  - Entity: 12345678
+    TagComponent:
+      Tag: top
+    TransformComponent:
+      Translation: [0, 0.5, 0]
+      Rotation: [1.57079613, -0.785398245, 4.21468513e-08]
+      Scale: [0.999999881, 1, 0.999914944]
+    SpriteRendererComponent:
+      Color: [0.192156866, 0.450980395, 0.0862745121, 0.866666675]
+  - Entity: 12345678
+    TagComponent:
+      Tag: front
+    TransformComponent:
+      Translation: [-0.35118863, -0.000933520496, 0.35118857]
+      Rotation: [0, -0.785398245, 0]
+      Scale: [0.999999881, 1, 0.999999881]
+    SpriteRendererComponent:
+      Color: [0.254901975, 0.596078455, 0.117647059, 0.768627465]
+  - Entity: 12345678
+    TagComponent:
+      Tag: right
+    TransformComponent:
+      Translation: [0.353995979, 0.00025747731, 0.353996128]
+      Rotation: [0, 0.785398245, 0]
+      Scale: [0.999981761, 0.999999881, 0.999981761]
+    SpriteRendererComponent:
+      Color: [0.172549024, 0.400000006, 0.0784313753, 0.858823538]
