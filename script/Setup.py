@@ -1,6 +1,8 @@
 # encoding: utf-8
+
 import os
 import subprocess
+import platform
 
 # -----------------------------1.检查python环境-----------------------------------
 # import pkg_resources
