@@ -105,6 +105,7 @@ namespace Hazel
 
 	void EditorCamera::MouseRotate(const glm::vec2& delta)
 	{
+		HZ_INFO("up direction = {0}, {1}, {2}", GetUpDirection().x, GetUpDirection().y, GetUpDirection().z);
 		float yawSign = GetUpDirection().y < 0 ? -1 : 1.0f;
 		m_Yaw += yawSign * delta.x * RotationSpeed();
 		m_Pitch += delta.y * RotationSpeed();
