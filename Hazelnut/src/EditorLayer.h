@@ -46,6 +46,7 @@ namespace Hazel
 		EditorCamera m_EditorCamera;
 
 		glm::vec2 m_ViewportSize = { 0.0, 0.0f };
+		glm::vec2 m_ViewportBounds[2]{};
 
 		int m_GizmoType = - 1;
 

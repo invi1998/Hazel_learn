@@ -15,7 +15,7 @@
 
 namespace Hazel
 {
-	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_CameraController(1920.f / 1080.f, true)
+	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_CameraController(1920.f / 1080.f, true), m_EditorCamera()
 	{
 	}
 
@@ -137,6 +137,21 @@ namespace Hazel
 		// update scene
 		m_ActiveScene->OnUpdateEditor(timeStep, m_EditorCamera);
 
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= m_ViewportBounds[0].x;
+		my -= m_ViewportBounds[0].y;
+		const glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+		my = viewportSize.y - my;
+
+		int mouseX = static_cast<int>(mx);
+		int mouseY = static_cast<int>(my);
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < static_cast<int>(viewportSize.x) && mouseY < static_cast<int>(viewportSize.y))
+		{
+			int pixelData = m_FrameBuffer->ReadPixel(1, mouseX, mouseY);
+			HZ_CORE_WARN("Pixel data = {0}", pixelData);
+		}
+
 		m_FrameBuffer->UnBind();
 	}
 
@@ -238,6 +253,8 @@ namespace Hazel
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
 		ImGui::Begin("ViewPort");
 
+		auto viewportOffset = ImGui::GetCursorPos(); // è·å–å½“å‰å…‰æ ‡ä½ç½®ï¼ˆåŒ…å«tab barï¼‰
+
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer()->SetBlockEvent(!m_ViewportFocused && !m_ViewportHovered);
@@ -251,6 +268,15 @@ namespace Hazel
 		}
 		const uint32_t textureID = m_FrameBuffer->GetColorAttachmentRenderer2D();
 		ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+
+		auto windowsSize = ImGui::GetWindowSize();
+		ImVec2 minBound = ImGui::GetWindowPos();
+		minBound.x += viewportOffset.x;
+		minBound.y += viewportOffset.y;
+
+		ImVec2 maxBound = {minBound.x + windowsSize.x, minBound.y + windowsSize.y};
+		m_ViewportBounds[0] = {minBound.x, minBound.y};
+		m_ViewportBounds[1] = {maxBound.x, maxBound.y};
 
 		// Gizmos
 		Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
@@ -280,8 +306,8 @@ namespace Hazel
 
 			// Snapping
 			bool snap = Input::IsKeyPressed(Key::LeftControl);
-			float snapValue = 0.5f;	// ¶ÔÆëµ½ 0.5 ½øĞĞÆ½ÒÆ/Ëõ·Å
-			// ¶ÔÆë 45¡ã ½øĞĞĞı×ª
+			float snapValue = 0.5f;	// å¯¹é½åˆ° 0.5 è¿›è¡Œå¹³ç§»/ç¼©æ”¾
+			// å¯¹é½ 45Â° è¿›è¡Œæ—‹è½¬
 			if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
 			{
 				snapValue = 45.0f;

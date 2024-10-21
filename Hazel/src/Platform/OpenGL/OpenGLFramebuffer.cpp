@@ -35,16 +35,17 @@ namespace Hazel
 			}
 		}
 
-		static void AttachColorTexture(uint32_t id, uint32_t samples, GLenum format, uint32_t width, uint32_t height, size_t index)
+		static void AttachColorTexture(uint32_t id, uint32_t samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, size_t index)
 		{
 			const bool multiSampled = samples > 1;
 			if (multiSampled)
 			{
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, index);
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, index);
 			}
 			else
 			{
-				glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+				// 璁剧疆绾圭悊鐨勫搴﹀拰楂樺害锛岃竟妗嗙殑瀹藉害锛岀汗鐞嗙殑鏍煎紡锛岀汗鐞嗙殑鏁版嵁绫诲瀷锛岀汗鐞嗙殑鏁版嵁
+				glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -116,8 +117,12 @@ namespace Hazel
 				switch (m_ColorAttachmentSpecification[i].TextureFormat)
 				{
 				case FrameBufferTextureFormat::RGBA8:
-					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, m_Specification.Width, m_Specification.Height, i);
+					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
 					break;
+				case FrameBufferTextureFormat::RED_INTEGER: 
+					Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
+					break;
+				default: break;
 				}
 			}
 		}
@@ -138,7 +143,7 @@ namespace Hazel
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_ColorAttachment);
 		glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-		// 当进行放大和缩小操作时，可以设置纹理过滤选项，这里再纹理被放大和缩小时都使用邻近过滤（GL_LINEAR），避免产生像素颗粒
+		// 褰撹繘琛屾斁澶у拰缂╁皬鎿嶄綔鏃讹紝鍙互璁剧疆绾圭悊杩囨护閫夐」锛岃繖閲屽啀绾圭悊琚斁澶у拰缂╁皬鏃堕兘浣跨敤閭昏繎杩囨护锛圙L_LINEAR锛夛紝閬垮厤浜х敓鍍忕礌棰楃矑
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -179,5 +184,15 @@ namespace Hazel
 		m_Specification.Height = height;
 
 		Invalidate();
+	}
+
+	int OpenGLFrameBuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
+	{
+		HZ_CORE_ASSERT(attachmentIndex <= m_ColorAttachments.size(), "Attachment index out of range");
+
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+		int pixelData;
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);		// 璇诲彇灞忓箷涓婃寚瀹氫綅缃殑鍍忕礌鏁版嵁
+		return pixelData;
 	}
 }

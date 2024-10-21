@@ -16,6 +16,7 @@ namespace Hazel
 		virtual void Bind() override ;
 		virtual void UnBind() override;
 		virtual void Resize(uint32_t width, uint32_t height) override;
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
 
 		virtual uint32_t GetColorAttachmentRenderer2D() const override { return m_ColorAttachment; }
 
