@@ -102,7 +102,7 @@ namespace Hazel
 	OpenGLFrameBuffer::~OpenGLFrameBuffer()
 	{
 		glDeleteFramebuffers(1, &m_RendererID);
-		glDeleteTextures(1, &m_ColorAttachment);
+		glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
 		glDeleteTextures(1, &m_DepthAttachment);
 	}
 
@@ -111,8 +111,11 @@ namespace Hazel
 		if (m_RendererID)
 		{
 			glDeleteFramebuffers(1, &m_RendererID);
-			glDeleteTextures(1, &m_ColorAttachment);
+			glDeleteTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
 			glDeleteTextures(1, &m_DepthAttachment);
+
+			m_ColorAttachments.clear();
+			m_DepthAttachment = 0;
 		}
 
 		glCreateFramebuffers(1, &m_RendererID);
@@ -155,6 +158,18 @@ namespace Hazel
 				break;
 			}
 		}
+
+		if (m_ColorAttachments.size() > 1)
+		{
+			HZ_CORE_ASSERT(m_ColorAttachments.size() <= 4, "Framebuffer only supports 4 attachments!");
+			GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+			glDrawBuffers(m_ColorAttachments.size(), buffers);
+		}
+		else if (m_ColorAttachments.empty())
+		{
+			// Only depth-pass
+			glDrawBuffer(GL_NONE);
+		}
 		
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_ColorAttachment);
 		glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
@@ -173,7 +188,7 @@ namespace Hazel
 
 		HZ_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!")
 
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	}
 
@@ -184,8 +199,8 @@ namespace Hazel
 
 		// 清除颜色附件的数据
 
-		constexpr int value = -1;
-		glClearTexImage(m_ColorAttachments[1], 0, GL_RED_INTEGER, GL_INT, &value);		// 将当前格式（GL_RED_INTEGER）的纹理数据设置为value
+		// constexpr int value = -1;
+		// glClearTexImage(m_ColorAttachments[1], 0, GL_RED_INTEGER, GL_INT, &value);		// 将当前格式（GL_RED_INTEGER）的纹理数据设置为value
 	}
 
 	void OpenGLFrameBuffer::UnBind()
