@@ -59,6 +59,8 @@ namespace Hazel
 		virtual void Resize(uint32_t width, uint32_t height) = 0;
 		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
 
+		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
+
 		virtual uint32_t GetColorAttachmentRenderer2D() const = 0;
 
 		static std::shared_ptr<FrameBuffer> Create(const FrameBufferSpecification& specification);

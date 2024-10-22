@@ -30,6 +30,7 @@ namespace Hazel
 			{
 			case FrameBufferTextureFormat::None: return false;
 			case FrameBufferTextureFormat::RGBA8: return false;
+			case FrameBufferTextureFormat::RED_INTEGER: return false;
 			case FrameBufferTextureFormat::DEPTH24STENCIL8: return true;
 			default: return false;
 			}
@@ -61,6 +62,21 @@ namespace Hazel
 		{
 			
 		}
+
+		static GLenum HazelTextureFormatToGL(FrameBufferTextureFormat format)
+		{
+			switch (format)
+			{
+			case FrameBufferTextureFormat::RGBA8: return GL_RGBA8;
+			case FrameBufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+			case FrameBufferTextureFormat::DEPTH24STENCIL8: return GL_DEPTH24_STENCIL8;
+			default: break;
+			}
+
+			HZ_CORE_ASSERT(false, "Unknown format!");
+			return 0;
+		}
+
 	}
 
 	
@@ -165,6 +181,11 @@ namespace Hazel
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
+
+		// 清除颜色附件的数据
+
+		constexpr int value = -1;
+		glClearTexImage(m_ColorAttachments[1], 0, GL_RED_INTEGER, GL_INT, &value);		// 将当前格式（GL_RED_INTEGER）的纹理数据设置为value
 	}
 
 	void OpenGLFrameBuffer::UnBind()
@@ -188,11 +209,20 @@ namespace Hazel
 
 	int OpenGLFrameBuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
 	{
-		HZ_CORE_ASSERT(attachmentIndex <= m_ColorAttachments.size(), "Attachment index out of range");
+		HZ_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Attachment index out of range");
 
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
 		int pixelData;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);		// 读取屏幕上指定位置的像素数据
 		return pixelData;
+	}
+
+	void OpenGLFrameBuffer::ClearAttachment(uint32_t attachmentIndex, int value)
+	{
+		HZ_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Attachment index out of range");
+
+		auto& spec = m_ColorAttachmentSpecification[attachmentIndex];
+
+		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::HazelTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
 	}
 }

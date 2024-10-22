@@ -30,7 +30,7 @@ namespace Hazel
 		m_CameraController.SetZoomLevel(5.0f);
 
 		FrameBufferSpecification fbSpec;
-		fbSpec.Attachments = {FrameBufferTextureFormat::RGBA8, FrameBufferTextureFormat::Depth};
+		fbSpec.Attachments = {FrameBufferTextureFormat::RGBA8, FrameBufferTextureFormat::RED_INTEGER, FrameBufferTextureFormat::Depth};
 		fbSpec.Width = 1280;
 		fbSpec.Height = 720;
 		m_FrameBuffer = FrameBuffer::Create(fbSpec);
@@ -133,6 +133,9 @@ namespace Hazel
 
 		RenderCommand::SetClearColor({.1f, .1f, .1f, 1});
 		RenderCommand::Clear();
+
+		// clear our entity ID attachment to -1
+		m_FrameBuffer->ClearAttachment(1, -1);
 
 		// update scene
 		m_ActiveScene->OnUpdateEditor(timeStep, m_EditorCamera);
