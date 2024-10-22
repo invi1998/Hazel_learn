@@ -55,8 +55,8 @@ namespace Hazel
 
 		BufferElement() = default;
 
-		BufferElement(ShaderDataType type, const std::string& name, bool norlmalized = false) : Type(type), Name(name), Offset(0),
-		                                                                                        Size(ShaderDataTypeSize(type)), Normalized(norlmalized)
+		BufferElement(ShaderDataType type, const std::string& name, bool norlmalized = false)
+		: Type(type), Name(name), Offset(0), Size(ShaderDataTypeSize(type)), Normalized(norlmalized)
 		{
 		}
 
@@ -73,9 +73,9 @@ namespace Hazel
 			case ShaderDataType::Float4:
 				return 4;
 			case ShaderDataType::Mat3:
-				return 3 * 3;
+				return 3;	// 3 * float3
 			case ShaderDataType::Mat4:
-				return 4 * 4;
+				return 4;	// 4 * float4
 			case ShaderDataType::Int:
 				return 1;
 			case ShaderDataType::Int2:
@@ -87,6 +87,9 @@ namespace Hazel
 			case ShaderDataType::Bool:
 				return 1;
 			}
+
+			HZ_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			return 0;
 		}
 	};
 
@@ -142,7 +145,7 @@ namespace Hazel
 		static std::shared_ptr<VertexBuffer> Create(float* vertices, uint32_t size);
 	};
 
-	// Ä¿Ç°½öÖ§32Î»µÄË÷Òı»º³åÇø
+	// ç›®å‰ä»…æ”¯32ä½çš„ç´¢å¼•ç¼“å†²åŒº
 	class IndexBuffer
 	{
 	public:

@@ -27,7 +27,7 @@ namespace Hazel
 		static const uint32_t MaxQuads = 20000;
 		static const uint32_t MaxVertices = MaxQuads * 4;
 		static const uint32_t MaxIndices = MaxQuads * 6;
-		static const uint32_t MaxTextureSlots = 32;	// TODO: RenderCaps(渲染上限)
+		static const uint32_t MaxTextureSlots = 32;	// TODO: RenderCaps(娓叉煋涓婇檺)
 
 		std::shared_ptr<VertexArray> QuadVertexArray;
 		std::shared_ptr<VertexBuffer> QuadVertexBuffer;
@@ -180,8 +180,8 @@ namespace Hazel
 	{
 		HZ_PROFILE_FUNCTION();
 
-		// 为啥transform的逆等于view?
-		// 因为相机transform的逆等于相机观察原点的观察矩阵
+		// 涓哄暐transform鐨勯�嗙瓑浜巚iew?
+		// 鍥犱负鐩告満transform鐨勯�嗙瓑浜庣浉鏈鸿瀵熷師鐐圭殑瑙傚療鐭╅樀
 		/*glm::mat4 viewPorj = camera.GetProjection() * glm::inverse(transform);
 
 		s_Data.TextureShader->Bind();
@@ -246,6 +246,7 @@ namespace Hazel
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = -1;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -321,6 +322,7 @@ namespace Hazel
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = -1;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -461,6 +463,7 @@ namespace Hazel
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = -1;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -502,6 +505,7 @@ namespace Hazel
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = -1;
 			s_Data.QuadVertexBufferPtr++;
 		}
 

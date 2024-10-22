@@ -80,7 +80,7 @@ namespace Hazel
 
 	void EditorCamera::UpdateView()
 	{
-		// m_Yaw = m_Pitch = 0.0f;	// 锁定相机旋转
+		// m_Yaw = m_Pitch = 0.0f;	// 閿佸畾鐩告満鏃嬭浆
 		m_Position = CalculatePosition();
 
 		glm::quat orientation = GetOrientation();
@@ -105,7 +105,6 @@ namespace Hazel
 
 	void EditorCamera::MouseRotate(const glm::vec2& delta)
 	{
-		HZ_INFO("up direction = {0}, {1}, {2}", GetUpDirection().x, GetUpDirection().y, GetUpDirection().z);
 		float yawSign = GetUpDirection().y < 0 ? -1 : 1.0f;
 		m_Yaw += yawSign * delta.x * RotationSpeed();
 		m_Pitch += delta.y * RotationSpeed();

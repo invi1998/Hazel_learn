@@ -146,13 +146,14 @@ namespace Hazel
 		const glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
 		my = viewportSize.y - my;
 
-		int mouseX = static_cast<int>(mx);
-		int mouseY = static_cast<int>(my);
+		const int mouseX = static_cast<int>(mx);
+		const int mouseY = static_cast<int>(my);
 
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < static_cast<int>(viewportSize.x) && mouseY < static_cast<int>(viewportSize.y))
 		{
 			int pixelData = m_FrameBuffer->ReadPixel(1, mouseX, mouseY);
-			HZ_CORE_WARN("Pixel data = {0}", pixelData);
+			HZ_CORE_WARN("pixelData: {0}", pixelData);
+			m_HoveredEntity = pixelData <= -1 ? Entity() : Entity{static_cast<entt::entity>(pixelData), m_ActiveScene.get()};
 		}
 
 		m_FrameBuffer->UnBind();
@@ -243,6 +244,8 @@ namespace Hazel
 		m_SceneHierarchyPanel.OnImGuiRender();
 
 		ImGui::Begin("Renderer2d Stats");
+
+		ImGui::Text("Hovered Entity: %s", m_HoveredEntity ? m_HoveredEntity.GetComponent<TagComponent>().Tag.c_str() : "None");
 
 		auto stats = Renderer2D::GetStarts();
 		ImGui::Text("Renderer2D Starts:");

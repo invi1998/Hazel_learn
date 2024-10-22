@@ -211,7 +211,7 @@ namespace Hazel
 	{
 		HZ_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Attachment index out of range");
 
-		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);		// 指定读取的颜色附件
 		int pixelData;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);		// 读取屏幕上指定位置的像素数据
 		return pixelData;
@@ -221,7 +221,7 @@ namespace Hazel
 	{
 		HZ_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Attachment index out of range");
 
-		auto& spec = m_ColorAttachmentSpecification[attachmentIndex];
+		const auto& spec = m_ColorAttachmentSpecification[attachmentIndex];
 
 		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::HazelTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
 	}
