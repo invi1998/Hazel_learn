@@ -25,6 +25,8 @@ namespace Hazel
 		void OpenScene();
 		void SaveAs();
 
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
+
 	private:
 		OrthographicCameraController m_CameraController;
 

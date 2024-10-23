@@ -119,13 +119,6 @@ namespace Hazel
 			m_ActiveScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
 		}
 
-		// Update
-		if (m_ViewportFocused)
-		{
-			m_CameraController.OnUpdate(timeStep);
-			m_EditorCamera.OnUpdate(timeStep);
-		}
-
 		// Renderer
 		Renderer2D::ResetStarts();
 
@@ -140,6 +133,13 @@ namespace Hazel
 		// update scene
 		m_ActiveScene->OnUpdateEditor(timeStep, m_EditorCamera);
 
+		// Update
+		if (m_ViewportFocused)
+		{
+			m_CameraController.OnUpdate(timeStep);
+			m_EditorCamera.OnUpdate(timeStep);
+		}
+
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= m_ViewportBounds[0].x;
 		my -= m_ViewportBounds[0].y;
@@ -153,7 +153,7 @@ namespace Hazel
 		{
 			int pixelData = m_FrameBuffer->ReadPixel(1, mouseX, mouseY);
 			HZ_CORE_WARN("pixelData: {0}", pixelData);
-			m_HoveredEntity = pixelData <= -1 ? Entity() : Entity{static_cast<entt::entity>(pixelData), m_ActiveScene.get()};
+			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{static_cast<entt::entity>(pixelData), m_ActiveScene.get()};
 		}
 
 		m_FrameBuffer->UnBind();
@@ -258,8 +258,7 @@ namespace Hazel
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
 		ImGui::Begin("ViewPort");
-
-		// auto viewportOffset = ImGui::GetCursorPos(); // 获取当前光标位置（包含tab bar）
+		
 		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 		auto viewportOffset = ImGui::GetWindowPos();
@@ -271,12 +270,13 @@ namespace Hazel
 		Application::Get().GetImGuiLayer()->SetBlockEvent(!m_ViewportFocused && !m_ViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if (m_ViewportSize != *reinterpret_cast<glm::vec2 *>(&viewportPanelSize) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
-		{
-			m_FrameBuffer->Resize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
-			m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
-			m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
-		}
+		m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+		// if (m_ViewportSize != *reinterpret_cast<glm::vec2 *>(&viewportPanelSize) && viewportPanelSize.x > 0 && viewportPanelSize.y > 0)
+		// {
+		// 	m_FrameBuffer->Resize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+		// 	m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+		// 	m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+		// }
 		const uint32_t textureID = m_FrameBuffer->GetColorAttachmentRenderer2D();
 		ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
 
@@ -350,6 +350,7 @@ namespace Hazel
 		EventDispatcher dispatcher(event);
 
 		dispatcher.Dispatch<KeyPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(HZ_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& event)
@@ -447,5 +448,17 @@ namespace Hazel
 			SceneSerializer serializer(m_ActiveScene);
 			serializer.Serialize(filepath);
 		}
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& event)
+	{
+		if (event.GetMouseButton() == Mouse::ButtonLeft)
+		{
+			if (m_ViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+			{
+				m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+			}
+		}
+		return false;
 	}
 }
