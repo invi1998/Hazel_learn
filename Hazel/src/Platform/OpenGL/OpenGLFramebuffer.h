@@ -19,11 +19,10 @@ namespace Hazel
 		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
-		virtual uint32_t GetColorAttachmentRenderer2D() const override { return m_ColorAttachment; }
+		virtual uint32_t GetColorAttachmentRenderer2D(uint32_t index = 0) const override;
 
 	private:
 		uint32_t m_RendererID = 0;			// 帧缓冲对象
-		uint32_t m_ColorAttachment = 0;		// 当前帧缓冲的颜色附件
 		uint32_t m_DepthAttachment = 0;		// 当前帧缓冲的深度附件
 		FrameBufferSpecification m_Specification;	// 帧缓冲规格
 

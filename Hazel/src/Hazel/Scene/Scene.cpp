@@ -2,10 +2,14 @@
 
 #include "Scene.h"
 
-#include "Hazel/Scene/Components.h"
+#include "Components.h"
+#include "Entity.h"
+
+#include "ScriptableEntity.h"
+
 #include "Hazel/Renderer/Renderer.h"
 #include "Hazel/Renderer/Renderer2D.h"
-#include "Hazel/Scene/Entity.h"
+
 
 namespace Hazel
 {
@@ -27,7 +31,8 @@ namespace Hazel
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, static_cast<int>(entity));
+			// Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, static_cast<int>(entity));
+			Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
 		}
 
 		Renderer2D::EndScene();
@@ -80,7 +85,8 @@ namespace Hazel
 			{
 				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, static_cast<int>(entity));
+				// Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, static_cast<int>(entity));
+				Renderer2D::DrawSprite(transform.GetTransform(), sprite, static_cast<int>(entity));
 			}
 
 			Renderer2D::EndScene();
@@ -89,10 +95,20 @@ namespace Hazel
 
 	Entity Scene::CreateEntity(const std::string &name)
 	{
-		Entity entity = {m_Registry.create(), this};
+		return CreateEntityWithUUID(name, UUID());
+	}
+
+	Entity Scene::CreateEntityWithUUID(const std::string& name, UUID uuid)
+	{
+		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<IDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
 		auto &tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
+
+		HZ_CORE_TRACE("Create entity with name {0} and UUID {1} and entity ID {2}", name, uuid, (uint32_t)entity);
+
+		m_EntityMap[uuid] = entity;
 
 		return entity;
 	}
@@ -116,11 +132,25 @@ namespace Hazel
 
 	void Scene::DestroyEntity(Entity entity)
 	{
-		// ÎÒÃÇÕâÀï´«µİ½øÀ´µÄentity²¢²»ÊÇÒ»¸öentityÊµÌå£¬¶øÖ»ÊÇÒ»¸öEntity³éÏó,
-		// destroyĞèÒªÒ»¸öentityÊµÌå£¬ÕâÀïµ±È»¿ÉÒÔÔÚEntityÀïĞ´Ò»¸ögetº¯Êı
-		// µ±È»ÎÒÃÇÒ²¿ÉÒÔÖØĞ´ entity ÔËËã·û£¬ÈçÏÂ
+		// æˆ‘ä»¬è¿™é‡Œä¼ é€’è¿›æ¥çš„entityå¹¶ä¸æ˜¯ä¸€ä¸ªentityå®ä½“ï¼Œè€Œåªæ˜¯ä¸€ä¸ªEntityæŠ½è±¡,
+		// destroyéœ€è¦ä¸€ä¸ªentityå®ä½“ï¼Œè¿™é‡Œå½“ç„¶å¯ä»¥åœ¨Entityé‡Œå†™ä¸€ä¸ªgetå‡½æ•°
+		// å½“ç„¶æˆ‘ä»¬ä¹Ÿå¯ä»¥é‡å†™ entity è¿ç®—ç¬¦ï¼Œå¦‚ä¸‹
 		// operator entt::entity() const { return m_EntityHandle; }
 		m_Registry.destroy(entity);
+	}
+
+	Entity Scene::GetEntityByUUID(UUID uuid)
+	{
+		auto view = m_Registry.view<IDComponent>();
+		for (auto entity : view)
+		{
+			const auto& id = view.get<IDComponent>(entity);
+			if (id.ID == uuid)
+			{
+				return Entity{ entity, this };
+			}
+		}
+		return {};
 	}
 
 	Entity Scene::GetPrimaryCameraEntity()
@@ -141,6 +171,11 @@ namespace Hazel
 	void Scene::OnComponentAdded(Entity entity, T &component)
 	{
 		static_assert(sizeof(T) == 0);
+	}
+
+	template <>
+	void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent &component)
+	{
 	}
 
 	template <>

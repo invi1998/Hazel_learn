@@ -41,7 +41,7 @@ namespace Hazel
 			const bool multiSampled = samples > 1;
 			if (multiSampled)
 			{
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, index);
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
 			}
 			else
 			{
@@ -58,9 +58,25 @@ namespace Hazel
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multiSampled), id, 0);
 		}
 
-		static void AttachDepthTexture(uint32_t uint32, uint32_t samples, int i, int i1, uint32_t width, uint32_t height)
+		static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height)
 		{
-			
+			const bool multiSampled = samples > 1;
+			if (multiSampled)
+			{
+				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
+			}
+			else
+			{
+				glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			}
+
+			glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multiSampled), id, 0);
 		}
 
 		static GLenum HazelTextureFormatToGL(FrameBufferTextureFormat format)
@@ -69,7 +85,6 @@ namespace Hazel
 			{
 			case FrameBufferTextureFormat::RGBA8: return GL_RGBA8;
 			case FrameBufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
-			case FrameBufferTextureFormat::DEPTH24STENCIL8: return GL_DEPTH24_STENCIL8;
 			default: break;
 			}
 
@@ -162,7 +177,7 @@ namespace Hazel
 		if (m_ColorAttachments.size() > 1)
 		{
 			HZ_CORE_ASSERT(m_ColorAttachments.size() <= 4, "Framebuffer only supports 4 attachments!");
-			GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+			const GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 			glDrawBuffers(m_ColorAttachments.size(), buffers);
 		}
 		else if (m_ColorAttachments.empty())
@@ -170,21 +185,6 @@ namespace Hazel
 			// Only depth-pass
 			glDrawBuffer(GL_NONE);
 		}
-		
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_ColorAttachment);
-		glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Specification.Width, m_Specification.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-		// 当进行放大和缩小操作时，可以设置纹理过滤选项，这里再纹理被放大和缩小时都使用邻近过滤（GL_LINEAR），避免产生像素颗粒
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachment, 0);
-
-		glCreateTextures(GL_TEXTURE_2D, 1, &m_DepthAttachment);
-		glBindTexture(GL_TEXTURE_2D, m_DepthAttachment);
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, m_Specification.Width, m_Specification.Height);
-		// glTexImage2D(GL_IMAGE_2D, 0, GL_DEPTH24_STENCIL8, m_Specification.Width, m_Specification.Height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachment, 0);
 
 		HZ_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!")
 
@@ -199,8 +199,8 @@ namespace Hazel
 
 		// 清除颜色附件的数据
 
-		// constexpr int value = -1;
-		// glClearTexImage(m_ColorAttachments[1], 0, GL_RED_INTEGER, GL_INT, &value);		// 将当前格式（GL_RED_INTEGER）的纹理数据设置为value
+		constexpr int value = -1;
+		glClearTexImage(m_ColorAttachments[1], 0, GL_RED_INTEGER, GL_INT, &value);		// 将当前格式（GL_RED_INTEGER）的纹理数据设置为value
 	}
 
 	void OpenGLFrameBuffer::UnBind()
@@ -229,6 +229,7 @@ namespace Hazel
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);		// 指定读取的颜色附件
 		int pixelData;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);		// 读取屏幕上指定位置的像素数据
+		HZ_CORE_INFO("ReadPixel: x = {0}, y = {1}, pixelData = {2}", x, y, pixelData);
 		return pixelData;
 	}
 
@@ -239,5 +240,11 @@ namespace Hazel
 		const auto& spec = m_ColorAttachmentSpecification[attachmentIndex];
 
 		glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::HazelTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+	}
+
+	uint32_t OpenGLFrameBuffer::GetColorAttachmentRenderer2D(uint32_t index) const
+	{
+		HZ_CORE_ASSERT(index < m_ColorAttachments.size(), "Index out of range!");
+		return m_ColorAttachments[index];
 	}
 }

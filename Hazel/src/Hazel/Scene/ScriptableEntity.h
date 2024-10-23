@@ -1,6 +1,8 @@
 #pragma once
-#include "Entity.h"
+
 #include "Hazel/Core/Timestep.h"
+
+#include "Entity.h"
 
 namespace Hazel
 {
@@ -10,7 +12,7 @@ namespace Hazel
 		virtual ~ScriptableEntity() = default;
 
 		template<typename T>
-		T& GetCompnent()
+		T& GetComponent()
 		{
 			return m_Entity.GetComponent<T>();
 		}

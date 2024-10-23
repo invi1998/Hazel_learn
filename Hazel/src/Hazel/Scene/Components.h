@@ -1,11 +1,20 @@
 #pragma once
 #include "SceneCamera.h"
-#include "ScriptableEntity.h"
 #include "glm/gtx/quaternion.hpp"
+#include "Hazel/Core/UUID.h"
 #include "Hazel/Renderer/OrthographicCamera.h"
 
 namespace Hazel
 {
+	struct IDComponent
+	{
+		UUID ID;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent &) = default;
+		IDComponent(const UUID &id) : ID(id) {}
+	};
+
 	struct TagComponent
 	{
 		std::string Tag;
@@ -30,9 +39,9 @@ namespace Hazel
 		glm::mat4 GetTransform() const
 		{
 			//glm::mat4 rotation = glm::rotate(
-			//						 glm::mat4{1.0f}, Rotation.x, {1.0f, 0.0f, 0.0f})			 // ÈÆxÖáĞı×ª
-			//					 * glm::rotate(glm::mat4{1.0f}, Rotation.y, {0.0f, 1.0f, 0.0f})	 // ÈÆyÖáĞı×ª
-			//					 * glm::rotate(glm::mat4{1.0f}, Rotation.z, {0.0f, 0.0f, 1.0f}); // ÈÆzÖáĞı×ª
+			//						 glm::mat4{1.0f}, Rotation.x, {1.0f, 0.0f, 0.0f})			 // ç»•xè½´æ—‹è½¬
+			//					 * glm::rotate(glm::mat4{1.0f}, Rotation.y, {0.0f, 1.0f, 0.0f})	 // ç»•yè½´æ—‹è½¬
+			//					 * glm::rotate(glm::mat4{1.0f}, Rotation.z, {0.0f, 0.0f, 1.0f}); // ç»•zè½´æ—‹è½¬
 
 			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
@@ -63,10 +72,13 @@ namespace Hazel
 		CameraComponent(const CameraComponent &) = default;
 	};
 
+	class ScriptableEntity;
+
 	struct NativeScriptComponent
 	{
-		// ÊµÌåAÖĞ¼ÓÈëÒ»¸ö½Å±¾×é¼ş£¬½Å±¾×é¼ş¹ØÁªBÀà£¬ ÄÇÃ´NativeScriptComponentµÄ×÷ÓÃ¾ÍÊÇÈÃEntityÔÚenttÏµÍ³¶ÔBÓĞ·ÃÎÊÈ¨
-		// Í¬Ê±ÈÃBÀà¶ÔÊµÌåAµÄÆäËû×é¼şÒ²ÓĞ·ÃÎÊÈ¨
+		// å®ä½“Aä¸­åŠ å…¥ä¸€ä¸ªè„šæœ¬ç»„ä»¶ï¼Œè„šæœ¬ç»„ä»¶å…³è”Bç±»ï¼Œé‚£ä¹ˆNativeScriptComponentçš„ä½œç”¨å°±æ˜¯è®©Entityåœ¨enttç³»ç»Ÿå¯¹Bæœ‰è®¿é—®æƒ
+		// åŒæ—¶è®©Bç±»å¯¹å®ä½“Açš„å…¶ä»–ç»„ä»¶ä¹Ÿæœ‰è®¿é—®æƒ;
+
 		ScriptableEntity *Instance = nullptr;
 
 		using InstantiateScript = ScriptableEntity *(*)();

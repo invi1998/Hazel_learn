@@ -85,10 +85,40 @@ namespace YAML
 			return true;
 		}
 	};
+
+	template<>
+	struct convert<Hazel::UUID>
+	{
+		static Node encode(const Hazel::UUID& uuid)
+		{
+			Node node;
+			node.push_back(static_cast<uint64_t>(uuid));
+			return node;
+		}
+
+		static bool decode(const Node& node, Hazel::UUID& uuid)
+		{
+			uuid = node.as<uint64_t>();
+			return true;
+		}
+	};
 }
 
 namespace Hazel
 {
+#define WRITE_SCRIPT_FIELD(FieldType, Type)           \
+			case ScriptFieldType::FieldType:          \
+				out << scriptField.GetValue<Type>();  \
+				break
+
+#define READ_SCRIPT_FIELD(FieldType, Type)             \
+	case ScriptFieldType::FieldType:                   \
+	{                                                  \
+		Type data = scriptField["Data"].as<Type>();    \
+		fieldInstance.SetValue(data);                  \
+		break;                                         \
+	}
+
 	YAML::Emitter &operator<<(YAML::Emitter &out, const glm::vec2 &v)
 	{
 		out << YAML::Flow;
@@ -116,8 +146,10 @@ namespace Hazel
 
 	static void SerializeEntity(YAML::Emitter &out, Entity entity)
 	{
+		HZ_CORE_ASSERT(entity.HasComponent<IDComponent>(), "瀹炰綋娌℃湁IDComponent!");
+
 		out << YAML::BeginMap;									   // Entity
-		out << YAML::Key << "Entity" << YAML::Value << "12345678"; // TODO: Entity ID goes here
+		out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
 
 		if (entity.HasComponent<TagComponent>())
 		{
@@ -197,7 +229,7 @@ namespace Hazel
 			{
 				return false;
 			}
-			HZ_CORE_INFO("实体");
+			HZ_CORE_INFO("瀹炰綋");
 			SerializeEntity(out, entity); });
 
 		out << YAML::EndSeq;
@@ -211,7 +243,7 @@ namespace Hazel
 
 	bool SceneSerializer::SerializeRuntime(const std::string &filepath)
 	{
-		// 暂未实现
+		// 鏆傛湭瀹炵幇
 		HZ_CORE_ASSERT(false);
 		return false;
 	}
@@ -229,7 +261,7 @@ namespace Hazel
 		}
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		HZ_CORE_TRACE("反序列化场景 '{0}'", sceneName);
+		HZ_CORE_TRACE("鍙嶅簭鍒楀寲鍦烘櫙 '{0}'", sceneName);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -245,7 +277,7 @@ namespace Hazel
 					name = tagComponent["Tag"].as<std::string>();
 				}
 
-				HZ_CORE_TRACE("反序列化实体：ID = {0}, name = {0}", uuid, name);
+				HZ_CORE_TRACE("鍙嶅簭鍒楀寲瀹炰綋锛欼D = {0}, name = {0}", uuid, name);
 
 				Entity deserializedEntity = m_Scene->CreateEntity(name);
 
@@ -293,7 +325,7 @@ namespace Hazel
 
 	bool SceneSerializer::DeserializeRuntime(const std::string &filepath)
 	{
-		// 暂未实现
+		// 鏆傛湭瀹炵幇
 		HZ_CORE_ASSERT(false);
 		return false;
 	}

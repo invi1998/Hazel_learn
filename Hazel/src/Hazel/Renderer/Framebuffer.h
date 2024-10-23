@@ -61,7 +61,7 @@ namespace Hazel
 
 		virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 
-		virtual uint32_t GetColorAttachmentRenderer2D() const = 0;
+		virtual uint32_t GetColorAttachmentRenderer2D(uint32_t index = 0) const = 0;
 
 		static std::shared_ptr<FrameBuffer> Create(const FrameBufferSpecification& specification);
 	};

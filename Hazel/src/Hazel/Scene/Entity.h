@@ -2,7 +2,9 @@
 
 #include <entt.hpp>
 
+#include "Hazel/Core/UUID.h"
 #include "Scene.h"
+#include "Components.h"
 
 namespace Hazel
 {
@@ -36,7 +38,7 @@ namespace Hazel
 		template<typename T>
 		bool HasComponent()
 		{
-			return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
+			return m_Scene->m_Registry.has<T>(m_EntityHandle);
 		}
 
 		template<typename T>
@@ -50,6 +52,9 @@ namespace Hazel
 		operator bool() const { return m_EntityHandle != entt::null; }
 		operator uint32_t() const { return static_cast<uint32_t>(m_EntityHandle); }
 		operator entt::entity() const { return m_EntityHandle; }
+
+		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
+		const std::string& GetName() { return GetComponent<TagComponent>().Tag; }
 
 		bool operator==(const Entity& e) const
 		{
