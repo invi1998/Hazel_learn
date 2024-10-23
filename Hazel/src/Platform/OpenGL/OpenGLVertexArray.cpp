@@ -67,7 +67,7 @@ namespace Hazel
 		vertexBuffer->Bind();
 
 		const auto& layout = vertexBuffer->GetLayout();
-		for (const auto& element : layout.GetElements())
+		for (const auto& element : layout)
 		{
 			switch (element.Type)
 			{
