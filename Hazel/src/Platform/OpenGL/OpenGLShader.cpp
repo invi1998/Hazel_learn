@@ -176,6 +176,13 @@ namespace Hazel
 		UploadUniformMat4(name, value);
 	}
 
+	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
+	{
+		HZ_PROFILE_FUNCTION();
+
+		UploadUniformFloat2(name, value);
+	}
+
 	void OpenGLShader::SetInt(const std::string& name, int value)
 	{
 		HZ_PROFILE_FUNCTION();
@@ -235,14 +242,14 @@ namespace Hazel
 
 	void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 	{
-		// ½«uniform±äÁ¿´«µİµ½shaderÉÏ
+		// å°†uniformå˜é‡ä¼ é€’åˆ°shaderä¸Š
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 	void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 	{
-		// ½«uniform±äÁ¿´«µİµ½shaderÉÏ
+		// å°†uniformå˜é‡ä¼ é€’åˆ°shaderä¸Š
 		GLint location = glGetUniformLocation(m_RenderID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}

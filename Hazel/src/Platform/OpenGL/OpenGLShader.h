@@ -23,6 +23,7 @@ namespace Hazel
 		void SetFloat3(const std::string& name, const glm::vec3& value) override;
 		void SetFloat4(const std::string& name, const glm::vec4& value) override;
 		void SetMat4(const std::string& name, const glm::mat4& value) override;
+		void SetFloat2(const std::string& name, const glm::vec2& value) override;
 		void SetInt(const std::string& name, int value) override;
 		void SetIntArray(const std::string& name, int* values, uint32_t count) override;
 
@@ -53,8 +54,8 @@ namespace Hazel
 		std::string m_Name;
 		std::string m_FilePath;
 
-		// m_VulkanSPIRVCacheÏàµ±ÓÚÒ»¸ö»º´æµÄunordered_map, keyÊÇ×Ó×ÅÉ«Æ÷ÀàĞÍ
-		// valueÊÇÒ»¸öuint32µÄÊı×é, ´ú±í×ÅSpir-V¶ÔÓ¦µÄ±àÒë½á¹û
+		// m_VulkanSPIRVCacheç›¸å½“äºä¸€ä¸ªç¼“å­˜çš„unordered_map, keyæ˜¯å­ç€è‰²å™¨ç±»å‹
+		// valueæ˜¯ä¸€ä¸ªuint32çš„æ•°ç»„, ä»£è¡¨ç€Spir-Vå¯¹åº”çš„ç¼–è¯‘ç»“æœ
 		std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
 		std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
 
