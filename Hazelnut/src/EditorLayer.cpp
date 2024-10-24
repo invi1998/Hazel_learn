@@ -1,4 +1,4 @@
-#include "EditorLayer.h"
+﻿#include "EditorLayer.h"
 
 #include "glm/gtc/type_ptr.hpp"
 #include <imgui/imgui.h>
@@ -154,8 +154,6 @@ namespace Hazel
 			int pixelData = m_FrameBuffer->ReadPixel(1, mouseX, mouseY);
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{static_cast<entt::entity>(pixelData), m_ActiveScene.get()};
 		}
-
-		HZ_CORE_INFO(L"测试中文字符");
 
 		m_FrameBuffer->UnBind();
 	}
