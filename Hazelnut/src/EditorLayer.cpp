@@ -152,7 +152,6 @@ namespace Hazel
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < static_cast<int>(viewportSize.x) && mouseY < static_cast<int>(viewportSize.y))
 		{
 			int pixelData = m_FrameBuffer->ReadPixel(1, mouseX, mouseY);
-			HZ_CORE_WARN("pixelData: {0}", pixelData);
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{static_cast<entt::entity>(pixelData), m_ActiveScene.get()};
 		}
 

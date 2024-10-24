@@ -25,7 +25,6 @@ namespace std
 	{
 		std::size_t operator()(const Hazel::UUID& uuid) const noexcept
 		{
-			HZ_CORE_WARN("std UUID: {0}", (uint64_t)uuid);
 			return (uint64_t)uuid;
 		}
 	};

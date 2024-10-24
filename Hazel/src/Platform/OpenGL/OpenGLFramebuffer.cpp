@@ -229,7 +229,6 @@ namespace Hazel
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);		// 指定读取的颜色附件
 		int pixelData;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);		// 读取屏幕上指定位置的像素数据
-		HZ_CORE_INFO("ReadPixel: x = {0}, y = {1}, pixelData = {2}", x, y, pixelData);
 		return pixelData;
 	}
 

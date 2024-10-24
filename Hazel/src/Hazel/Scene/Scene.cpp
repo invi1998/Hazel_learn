@@ -106,8 +106,6 @@ namespace Hazel
 		auto &tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Entity" : name;
 
-		HZ_CORE_TRACE("Create entity with name {0} and UUID {1} and entity ID {2}", name, uuid, (uint32_t)entity);
-
 		m_EntityMap[uuid] = entity;
 
 		return entity;

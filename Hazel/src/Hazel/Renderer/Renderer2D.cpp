@@ -479,7 +479,6 @@ namespace Hazel
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
 	{
-		HZ_CORE_WARN("entityID: {0}", entityID);
 		DrawQuad(transform, src.Color, entityID);
 	}
 

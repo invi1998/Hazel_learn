@@ -71,7 +71,6 @@ namespace Hazel
 		{
 			switch (element.Type)
 			{
-			case ShaderDataType::None:
 			case ShaderDataType::Float:
 			case ShaderDataType::Float2:
 			case ShaderDataType::Float3:
@@ -113,13 +112,12 @@ namespace Hazel
 			case ShaderDataType::Bool:
 				{
 					glEnableVertexAttribArray(m_VertexBufferIndex);
-					glVertexAttribPointer(m_VertexBufferIndex,
+					glVertexAttribIPointer(m_VertexBufferIndex,
 						element.GetComponentCount(),
 						ShaderDataTypeToOpenGLBaseType(element.Type),
-						element.Normalized ? GL_TRUE : GL_FALSE,
 						layout.GetStride(),
 						reinterpret_cast<const void*>(element.Offset));
-					glVertexAttribDivisor(m_VertexBufferIndex, 1);
+					// glVertexAttribDivisor(m_VertexBufferIndex, 1);
 					m_VertexBufferIndex++;
 					break;
 				}

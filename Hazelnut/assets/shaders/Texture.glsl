@@ -100,8 +100,7 @@ void main()
 	{
 		discard;
 	}
-
-	// o_Color = texColor;
+	
+	o_Color = texColor;
 	o_EntityID = v_EntityID;
-	o_Color = vec4(float(v_EntityID) / 255.0, 0.0, 0.0, 1.0);
 }

@@ -13,7 +13,6 @@ namespace Hazel
 	UUID::UUID()
 		: m_UUID(s_UniformDistribution(s_Engine))
 	{
-		HZ_CORE_WARN("UUID: {0}", m_UUID);
 	}
 
 	UUID::UUID(uint64_t uuid)
