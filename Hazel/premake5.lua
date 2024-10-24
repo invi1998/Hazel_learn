@@ -27,7 +27,8 @@ project "Hazel"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
-        "GLFW_INCLUDE_NONE"
+        "GLFW_INCLUDE_NONE",
+		"SPDLOG_WCHAR_TO_UTF8_SUPPORT"
 	}
 
 	includedirs
@@ -53,6 +54,9 @@ project "Hazel"
 		"yaml-cpp",
 		"opengl32.lib"
 	}
+
+	-- 设置字符集为 Unicode
+	characterset "Unicode"
 
 	filter "files:vendor/ImGuizmo/**.cpp"
 	flags { "NoPCH" }

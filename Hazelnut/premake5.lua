@@ -28,6 +28,10 @@ project "Hazelnut"
 		"Hazel"
 	}
 
+	-- 设置字符集为 Unicode
+	characterset "Unicode"
+	defines { "SPDLOG_WCHAR_TO_UTF8_SUPPORT" }
+
 	filter "system:windows"
 		systemversion "latest"
 

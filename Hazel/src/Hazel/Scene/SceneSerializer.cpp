@@ -261,7 +261,7 @@ namespace Hazel
 		}
 
 		std::string sceneName = data["Scene"].as<std::string>();
-		HZ_CORE_TRACE("反序列化场景 '{0}'", sceneName);
+		HZ_CORE_TRACE("反序列化场景：{0}", sceneName);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -277,7 +277,7 @@ namespace Hazel
 					name = tagComponent["Tag"].as<std::string>();
 				}
 
-				HZ_CORE_TRACE("反序列化实体：ID = {0}, name = {0}", uuid, name);
+				HZ_CORE_TRACE("加载实体：{0}，UUID：{1}", name, uuid);
 
 				Entity deserializedEntity = m_Scene->CreateEntity(name);
 

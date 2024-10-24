@@ -155,6 +155,8 @@ namespace Hazel
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{static_cast<entt::entity>(pixelData), m_ActiveScene.get()};
 		}
 
+		HZ_CORE_INFO(L"测试中文字符");
+
 		m_FrameBuffer->UnBind();
 	}
 
