@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "Hazel/Core/Log.h"
 #include "imgui/imgui.h"
 
 // m_CurrentDirectory /= path.filename();
@@ -15,6 +16,9 @@ namespace Hazel
 	ContentBrowserPanel::ContentBrowserPanel()
 		: m_CurrentDirectory(s_AssetPath)
 	{
+		m_DirectoryIcon = Texture2D::Create("Resources/Icons/ContentBrowser/FullDirectoryIcon.png");
+		m_EmptyDirectoryIcon = Texture2D::Create("Resources/Icons/ContentBrowser/EmptyDirectoryIcon.png");
+		m_FileIcon = Texture2D::Create("Resources/Icons/ContentBrowser/DtFileIcon.png");
 	}
 
 	void ContentBrowserPanel::OnImGuiRender()
@@ -29,23 +33,53 @@ namespace Hazel
 			}
 		}
 
+		static float padding = 32.0f;
+		static float thumbnailSize = 128.0f;
+		static float cellSize = thumbnailSize + padding;
+
+		const float panelWidth = ImGui::GetContentRegionAvail().x;
+		int columnCount = static_cast<int>(panelWidth / cellSize);
+		if (columnCount < 1)
+			columnCount = 1;
+
+		ImGui::Columns(columnCount, 0, false);
+
 		for (const auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
 			const auto& path = directoryEntry.path();
 			auto relativePath = std::filesystem::relative(path, s_AssetPath);
 
-			if (directoryEntry.is_directory())
+			ImGui::PushID(relativePath.string().c_str());
+			std::shared_ptr<Texture2D> icon = directoryEntry.is_directory() ? std::filesystem::is_empty(path) ? m_EmptyDirectoryIcon : m_DirectoryIcon : m_FileIcon;
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+			ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->GetRendererID()), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+
+			if (ImGui::BeginDragDropSource())
 			{
-				if (ImGui::Button(relativePath.string().c_str()))
+				std::filesystem::path relativePath(path);
+				const wchar_t* pathStr = relativePath.c_str();
+				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", pathStr, (wcslen(pathStr) + 1) * sizeof(wchar_t));
+				ImGui::EndDragDropSource();
+			}
+
+			ImGui::PopStyleColor();
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+			{
+				if (directoryEntry.is_directory())
 				{
 					m_CurrentDirectory /= path.filename();
 				}
 			}
-			else
-			{
-				ImGui::Text("%s", relativePath.string().c_str());
-			}
+
+			ImGui::TextWrapped(path.filename().string().c_str());
+			ImGui::NextColumn();
+			ImGui::PopID();
 		}
+
+		ImGui::Columns(1);
+
+		ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16.0f, 512.0f);
+		ImGui::SliderFloat("Padding", &padding, 0.0f, 32.0f);
 
 		ImGui::End();
 	}
