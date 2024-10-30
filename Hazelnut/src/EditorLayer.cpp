@@ -242,6 +242,8 @@ namespace Hazel
 
 		m_SceneHierarchyPanel.OnImGuiRender();
 
+		m_ContentBrowserPanel.OnImGuiRender();
+
 		ImGui::Begin("Renderer2d Stats");
 
 		ImGui::Text("Hovered Entity: %s", m_HoveredEntity ? m_HoveredEntity.GetComponent<TagComponent>().Tag.c_str() : "None");

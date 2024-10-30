@@ -4,6 +4,7 @@
 #include "Hazel/Scene/SceneSerializer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ContentBrowserPanel.h"
 
 namespace Hazel
 {
@@ -55,7 +56,8 @@ namespace Hazel
 		int m_GizmoType = - 1;
 
 		// panels
-		SceneHierarchyPanel m_SceneHierarchyPanel;
+		SceneHierarchyPanel m_SceneHierarchyPanel;		// 场景层次面板
+		ContentBrowserPanel m_ContentBrowserPanel;		// 内容浏览面板
 		
 	};
 }
