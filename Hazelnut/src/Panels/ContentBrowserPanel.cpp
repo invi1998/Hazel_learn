@@ -25,6 +25,60 @@ namespace Hazel
 	{
 		ImGui::Begin("Content Browser");
 
+		static float padding = 32.0f;
+		static float thumbnailSize = 128.0f;
+		static float cellSize = thumbnailSize + padding;
+
+		// 左侧滑块区域
+		ImGui::BeginChild("LeftPane", ImVec2(40, 0), true); // 固定宽度为50
+
+		// 自定义绘制垂直滑块
+		auto DrawVerticalSlider = [](const char* label, float* value, float min, float max)
+			{
+				ImGui::PushID(label);
+				ImGui::BeginGroup();
+				ImGui::Text(label);
+
+				ImVec2 size = ImVec2(10, 160);
+				ImVec2 pos = ImGui::GetCursorScreenPos();
+				ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+				// 绘制滑块背景
+				draw_list->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), IM_COL32(34, 34, 24, 255));
+				// 绘制滑块边框
+				draw_list->AddRect(pos, ImVec2(pos.x + size.x, pos.y + size.y), IM_COL32(210, 210, 210, 255));
+
+				// 计算滑块已滑过区域的高度
+				float sliderHeight = (size.y - 2) * (*value - min) / (max - min);
+
+				// 绘制渐变色的已滑过区域
+				ImU32 col1 = IM_COL32(224, 195, 252, 255); // 红色
+				ImU32 col2 = IM_COL32(252, 172, 142, 255); // 蓝色
+				draw_list->AddRectFilledMultiColor(ImVec2(pos.x + 1, pos.y + size.y - sliderHeight), ImVec2(pos.x + size.x - 1, pos.y + size.y - 1), col1, col1, col2, col2);
+
+				ImGui::InvisibleButton(label, size);
+				if (ImGui::IsItemActive())
+				{
+					*value = min + (max - min) * (1.0f - (ImGui::GetIO().MousePos.y - pos.y) / size.y);
+					if (*value < min) *value = min;
+					if (*value > max) *value = max;
+				}
+
+				ImGui::EndGroup();
+				ImGui::PopID();
+			};
+
+		DrawVerticalSlider("T", &thumbnailSize, 16.0f, 512.0f); // T for Thumbnail
+		ImGui::SameLine();
+		DrawVerticalSlider("P", &padding, 0.0f, 32.0f); // P for Padding
+
+		ImGui::EndChild();
+
+		ImGui::SameLine();
+
+		// 右侧内容浏览器区域
+		ImGui::BeginChild("ContentBrowser");
+
 		if (m_CurrentDirectory != std::filesystem::path(g_AssetPath))
 		{
 			if (ImGui::Button("<-"))
@@ -32,10 +86,6 @@ namespace Hazel
 				m_CurrentDirectory = m_CurrentDirectory.parent_path();
 			}
 		}
-
-		static float padding = 32.0f;
-		static float thumbnailSize = 128.0f;
-		static float cellSize = thumbnailSize + padding;
 
 		const float panelWidth = ImGui::GetContentRegionAvail().x;
 		int columnCount = static_cast<int>(panelWidth / cellSize);
@@ -56,6 +106,9 @@ namespace Hazel
 
 			if (ImGui::BeginDragDropSource())
 			{
+				// 修改鼠标指针为拖拽
+				ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+
 				std::filesystem::path relativePath(path);
 				const wchar_t* pathStr = relativePath.c_str();
 				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", pathStr, (wcslen(pathStr) + 1) * sizeof(wchar_t));
@@ -78,8 +131,7 @@ namespace Hazel
 
 		ImGui::Columns(1);
 
-		ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16.0f, 512.0f);
-		ImGui::SliderFloat("Padding", &padding, 0.0f, 32.0f);
+		ImGui::EndChild();
 
 		ImGui::End();
 	}

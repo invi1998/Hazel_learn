@@ -286,6 +286,9 @@ namespace Hazel
 		
 		if (ImGui::BeginDragDropTarget())
 		{
+			// 修改鼠标指针为拖拽
+			ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+
 			// 获取当前窗口的绘图上下文
 			ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
