@@ -11,10 +11,10 @@
 
 namespace Hazel
 {
-	static const std::filesystem::path s_AssetPath = "assets";
+	extern const std::filesystem::path g_AssetPath = "assets";
 
 	ContentBrowserPanel::ContentBrowserPanel()
-		: m_CurrentDirectory(s_AssetPath)
+		: m_BaseDirectory(), m_CurrentDirectory(g_AssetPath)
 	{
 		m_DirectoryIcon = Texture2D::Create("Resources/Icons/ContentBrowser/FullDirectoryIcon.png");
 		m_EmptyDirectoryIcon = Texture2D::Create("Resources/Icons/ContentBrowser/EmptyDirectoryIcon.png");
@@ -25,7 +25,7 @@ namespace Hazel
 	{
 		ImGui::Begin("Content Browser");
 
-		if (m_CurrentDirectory != std::filesystem::path(s_AssetPath))
+		if (m_CurrentDirectory != std::filesystem::path(g_AssetPath))
 		{
 			if (ImGui::Button("<-"))
 			{
@@ -47,7 +47,7 @@ namespace Hazel
 		for (const auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentDirectory))
 		{
 			const auto& path = directoryEntry.path();
-			auto relativePath = std::filesystem::relative(path, s_AssetPath);
+			auto relativePath = std::filesystem::relative(path, g_AssetPath);
 
 			ImGui::PushID(relativePath.string().c_str());
 			std::shared_ptr<Texture2D> icon = directoryEntry.is_directory() ? std::filesystem::is_empty(path) ? m_EmptyDirectoryIcon : m_DirectoryIcon : m_FileIcon;

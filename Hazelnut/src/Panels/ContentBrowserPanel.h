@@ -14,7 +14,7 @@ namespace Hazel
 		void OnImGuiRender();
 
 	private:
-
+		std::filesystem::path m_BaseDirectory;			// 基础目录
 		std::filesystem::path m_CurrentDirectory;		// 当前目录
 
 		std::shared_ptr<Texture2D> m_DirectoryIcon;			// 目录图标

@@ -15,6 +15,8 @@
 
 namespace Hazel
 {
+	extern const std::filesystem::path g_AssetPath;
+
 	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_CameraController(1920.f / 1080.f, true), m_EditorCamera()
 	{
 	}
@@ -286,7 +288,8 @@ namespace Hazel
 			if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t *path = static_cast<const wchar_t *>(payload->Data);
-				HZ_CORE_TRACE("Dropped file: {0}", path);
+				OpenScene(path);
+				// HZ_CORE_TRACE("Dropped file: {0}", path);
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -441,13 +444,18 @@ namespace Hazel
 		std::string filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
 		if (!filepath.empty())
 		{
-			m_ActiveScene = std::make_shared<Scene>();
-			m_ActiveScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
-			m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.Deserialize(filepath);
+			OpenScene(filepath);
 		}
+	}
+
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+		m_ActiveScene = std::make_shared<Scene>();
+		m_ActiveScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+		SceneSerializer serializer(m_ActiveScene);
+		serializer.Deserialize(path.string());
 	}
 
 	void EditorLayer::SaveAs()

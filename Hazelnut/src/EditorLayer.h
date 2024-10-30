@@ -24,6 +24,7 @@ namespace Hazel
 		bool OnKeyPressed(KeyPressedEvent& event);
 		void NewScene();
 		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
 		void SaveAs();
 
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
