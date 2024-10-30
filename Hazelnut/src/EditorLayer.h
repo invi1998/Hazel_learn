@@ -59,6 +59,9 @@ namespace Hazel
 		// panels
 		SceneHierarchyPanel m_SceneHierarchyPanel;		// 场景层次面板
 		ContentBrowserPanel m_ContentBrowserPanel;		// 内容浏览面板
+
+		// Drop BG
+		std::shared_ptr<Texture2D> m_DropTargetTexture;	// 拖拽背景
 		
 	};
 }

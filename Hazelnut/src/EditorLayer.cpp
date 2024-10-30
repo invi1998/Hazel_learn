@@ -19,6 +19,7 @@ namespace Hazel
 
 	EditorLayer::EditorLayer() : Layer("EditorLayer"), m_CameraController(1920.f / 1080.f, true), m_EditorCamera()
 	{
+		m_DropTargetTexture = Texture2D::Create("Resources/Icons/ContentBrowser/Drop.png");
 	}
 
 	void EditorLayer::OnAttach()
@@ -285,6 +286,33 @@ namespace Hazel
 		
 		if (ImGui::BeginDragDropTarget())
 		{
+			// 获取当前窗口的绘图上下文
+			ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+			// 获取 ViewPort 的边界
+			ImVec2 viewportMin = ImGui::GetWindowContentRegionMin();
+			ImVec2 viewportMax = ImGui::GetWindowContentRegionMax();
+			ImVec2 viewportPos = ImGui::GetWindowPos();
+			ImVec2 viewportMinPos = ImVec2(viewportMin.x + viewportPos.x, viewportMin.y + viewportPos.y);
+			ImVec2 viewportMaxPos = ImVec2(viewportMax.x + viewportPos.x, viewportMax.y + viewportPos.y);
+
+			// 计算图片位置，使其居中
+			ImVec2 imageSize = ImVec2(100, 100); // 假设图片大小为100x100
+			ImVec2 imagePos = ImVec2(
+				(viewportMinPos.x + viewportMaxPos.x - imageSize.x) / 2,
+				(viewportMinPos.y + viewportMaxPos.y - imageSize.y) / 2
+			);
+
+			// 绘制半透明背景层
+			draw_list->AddRectFilled(viewportMinPos, viewportMaxPos, IM_COL32(110, 110, 110, 128));
+
+			// 绘制高亮边框
+			draw_list->AddRect(viewportMinPos, viewportMaxPos, IM_COL32(255, 255, 0, 255), 0.0f, 0, 3.0f);
+
+			// 绘制拖拽图片
+			ImTextureID myTexture = reinterpret_cast<ImTextureID>(m_DropTargetTexture->GetRendererID());
+			draw_list->AddImage(myTexture, imagePos, ImVec2(imagePos.x + imageSize.x, imagePos.y + imageSize.y));
+
 			if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t *path = static_cast<const wchar_t *>(payload->Data);
