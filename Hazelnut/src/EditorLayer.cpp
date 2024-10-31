@@ -29,6 +29,8 @@ namespace Hazel
 		Layer::OnAttach();
 
 		m_BackgroundTexture = Texture2D::Create("assets/textures/batthern.png");
+		m_IconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
+		m_IconStop = Texture2D::Create("Resources/Icons/StopButton.png");
 
 		m_CameraController.SetZoomLevel(5.0f);
 
@@ -382,6 +384,8 @@ namespace Hazel
 		ImGui::End();
 		ImGui::PopStyleVar();
 
+		UI_Toolbar();
+
 		ImGui::End();
 	}
 
@@ -510,5 +514,58 @@ namespace Hazel
 			}
 		}
 		return false;
+	}
+
+	void EditorLayer::OnScenePlay()
+	{
+		m_SceneState = SceneState::Play;
+	}
+
+	void EditorLayer::OnSceneStop()
+	{
+		m_SceneState = SceneState::Edit;
+	}
+
+	void EditorLayer::UI_Toolbar()
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+
+		// Toolbar，不显示标题栏，不显示滚动条，不显示鼠标滚动
+		ImGui::Begin("##Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		float size = ImGui::GetWindowHeight() - 4.0f;
+		auto& color = ImGui::GetStyle().Colors;
+		const auto& buttonHovered = color[ImGuiCol_ButtonHovered];
+		const auto& buttonActive = color[ImGuiCol_ButtonActive];
+
+		std::shared_ptr<Texture2D> icon = m_SceneState == SceneState::Play ? m_IconStop : m_IconPlay;
+
+		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x - size) * 0.5f);
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x - size) * 0.5f);
+
+		ImVec4 buttonColor = m_SceneState == SceneState::Play ? ImVec4(0.8f, 0.2f, 0.2f, 1.0f) : ImVec4(0.2f, 0.8f, 0.2f, 1.0f);
+
+		if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->GetRendererID()), ImVec2{ size, size }, { 0, 1 }, { 1, 0 }, 0, {0, 0, 0, 0}, buttonColor))
+		{
+			if (m_SceneState == SceneState::Edit)
+			{
+				OnScenePlay();
+			}
+			else if (m_SceneState == SceneState::Play)
+			{
+				OnSceneStop();
+			}
+		}
+
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor(3);
+
+		ImGui::End();
 	}
 }

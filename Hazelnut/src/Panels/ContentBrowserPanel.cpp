@@ -30,16 +30,18 @@ namespace Hazel
 		static float cellSize = thumbnailSize + padding;
 
 		// 左侧滑块区域
-		ImGui::BeginChild("LeftPane", ImVec2(40, 0), true); // 固定宽度为50
+		ImGui::BeginChild("LeftPane", ImVec2(36, 0), true); // 固定宽度为50
 
 		// 自定义绘制垂直滑块
 		auto DrawVerticalSlider = [](const char* label, float* value, float min, float max)
 			{
+				float lineHeight = ImGui::GetWindowHeight() - 44.0f;
+				
 				ImGui::PushID(label);
 				ImGui::BeginGroup();
 				ImGui::Text(label);
 
-				ImVec2 size = ImVec2(10, 160);
+				ImVec2 size = ImVec2(10, lineHeight);
 				ImVec2 pos = ImGui::GetCursorScreenPos();
 				ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
@@ -69,8 +71,8 @@ namespace Hazel
 			};
 
 		DrawVerticalSlider("T", &thumbnailSize, 16.0f, 512.0f); // T for Thumbnail
-		ImGui::SameLine();
-		DrawVerticalSlider("P", &padding, 0.0f, 32.0f); // P for Padding
+		// ImGui::SameLine();
+		// DrawVerticalSlider("P", &padding, 0.0f, 32.0f); // P for Padding
 
 		ImGui::EndChild();
 

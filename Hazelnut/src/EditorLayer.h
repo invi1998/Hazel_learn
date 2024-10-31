@@ -29,6 +29,12 @@ namespace Hazel
 
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& event);
 
+		void OnScenePlay();
+		void OnSceneStop();
+
+		// UI面板
+		void UI_Toolbar();
+
 	private:
 		OrthographicCameraController m_CameraController;
 
@@ -62,6 +68,15 @@ namespace Hazel
 
 		// Drop BG
 		std::shared_ptr<Texture2D> m_DropTargetTexture;	// 拖拽背景
+
+		std::shared_ptr<Texture2D> m_IconPlay;
+		std::shared_ptr<Texture2D> m_IconStop;
+
+		// Scene State
+		enum class SceneState
+		{
+			Edit = 0, Play = 1
+		} m_SceneState = SceneState::Edit;
 		
 	};
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+struct ImVec4;
+
 namespace Hazel
 {
 	class Texture
@@ -25,5 +27,6 @@ namespace Hazel
 	public:
 		static std::shared_ptr<Texture2D> Create(uint32_t width, uint32_t height);
 		static std::shared_ptr<Texture2D> Create(const std::string& path);
+		static std::shared_ptr<Texture2D> Create(const std::string& path, const ImVec4& color);
 	};
 }
