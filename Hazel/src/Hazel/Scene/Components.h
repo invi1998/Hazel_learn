@@ -3,6 +3,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "Hazel/Core/UUID.h"
 #include "Hazel/Renderer/OrthographicCamera.h"
+#include "Hazel/Renderer/Texture.h"
 
 namespace Hazel
 {
@@ -52,6 +53,8 @@ namespace Hazel
 	struct SpriteRendererComponent
 	{
 		glm::vec4 Color{1.0f};
+		std::shared_ptr<Texture2D> Texture;
+		float TilingFactor = 1.0f;		// 纹理平铺因子
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent &) = default;

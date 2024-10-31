@@ -31,13 +31,13 @@ namespace Hazel
 				Entity entity{ entityID, m_Context.get() };
 				DrawEntityNode(entity); });
 
-			// 如果在我们到达这点之前，窗口中的一个项目已经处理了我们的点击，那这里就不会重复相应
+			// 濡傛灉鍦ㄦ垜浠埌杈捐繖鐐逛箣鍓嶏紝绐楀彛涓殑涓�涓」鐩凡缁忓鐞嗕簡鎴戜滑鐨勭偣鍑伙紝閭ｈ繖閲屽氨涓嶄細閲嶅鐩稿簲
 			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			{
 				m_SelectionContext = {};
 			}
 
-			// 在黑屏处右键点击
+			// 鍦ㄩ粦灞忓鍙抽敭鐐瑰嚮
 			if (ImGui::BeginPopupContextWindow(nullptr, 1))
 			{
 				if (ImGui::MenuItem("Create Empty Entity"))
@@ -301,7 +301,7 @@ namespace Hazel
 
 				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 				{
-					// 透视投影
+					// 閫忚鎶曞奖
 					float verticalFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
 					if (ImGui::DragFloat("Vertical FOV", &verticalFOV))
 					{
@@ -323,7 +323,7 @@ namespace Hazel
 
 				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
 				{
-					// 正交投影
+					// 姝ｄ氦鎶曞奖
 					float orthoSize = camera.GetOrthographicSize();
 					if (ImGui::DragFloat("Size", &orthoSize))
 					{
@@ -346,6 +346,30 @@ namespace Hazel
 				} });
 
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto &component)
-											   { ImGui::ColorEdit4("Color", glm::value_ptr(component.Color)); });
+		{
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+
+			ImGui::Button("Texture", ImVec2(50.0f, 0.0f));
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+				{
+					const wchar_t* path = (const wchar_t*)payload->Data;
+					std::string pathStr = std::filesystem::path(path).string();
+					HZ_CORE_INFO("Dropped path: {0}", pathStr);
+					std::filesystem::path texturePath = std::filesystem::path(path);
+					if (std::filesystem::exists(texturePath))
+					{
+						HZ_CORE_INFO("Dropped texture path: {0}", texturePath.string());
+						component.Texture = Texture2D::Create(texturePath.string());
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f, "%.2f");
+		});
 	}
 }
