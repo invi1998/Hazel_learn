@@ -135,15 +135,24 @@ namespace Hazel
 		// clear our entity ID attachment to -1
 		m_FrameBuffer->ClearAttachment(1, -1);
 
-		// update scene
-		m_ActiveScene->OnUpdateEditor(timeStep, m_EditorCamera);
-
-		// Update
-		if (m_ViewportFocused)
+		switch (m_SceneState)
 		{
-			m_CameraController.OnUpdate(timeStep);
-			m_EditorCamera.OnUpdate(timeStep);
+			case SceneState::Edit:
+				m_ActiveScene->OnUpdateEditor(timeStep, m_EditorCamera);
+
+				// Update
+				if (m_ViewportFocused)
+				{
+					m_CameraController.OnUpdate(timeStep);
+					m_EditorCamera.OnUpdate(timeStep);
+				}
+
+				break;
+			case SceneState::Play:
+				m_ActiveScene->OnUpdateRuntime(timeStep);
+				break;
 		}
+
 
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= m_ViewportBounds[0].x;
@@ -551,7 +560,7 @@ namespace Hazel
 
 		ImVec4 buttonColor = m_SceneState == SceneState::Play ? ImVec4(0.8f, 0.2f, 0.2f, 1.0f) : ImVec4(0.2f, 0.8f, 0.2f, 1.0f);
 
-		if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->GetRendererID()), ImVec2{ size, size }, { 0, 1 }, { 1, 0 }, 0, {0, 0, 0, 0}, buttonColor))
+		if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->GetRendererID()), ImVec2{ size, size }, { 0, 0 }, { 1, 1 }, 0, {0, 0, 0, 0}, buttonColor))
 		{
 			if (m_SceneState == SceneState::Edit)
 			{
