@@ -386,10 +386,10 @@ namespace Hazel
 					}
 				}
 
-				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
-
 				ImGui::EndCombo();
 			}
+
+			ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
 		});
 
 		DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)

@@ -39,10 +39,10 @@ namespace Hazel
 			auto& rb2d = entity.GetComponent<Rigidbody2DComponent>();		// 刚体
 
 			// 创建Box2D物理刚体
-			b2BodyDef bodyDef;
+			b2BodyDef bodyDef = b2DefaultBodyDef();
 			bodyDef.type = Utils::ConvertToBox2DBodyType(rb2d.Type);
 			bodyDef.position = { transform.Translation.x, transform.Translation.y };
-			bodyDef.rotation = {transform.Rotation.z};
+			bodyDef.rotation = b2MakeRot( transform.Rotation.z );
 			b2BodyId body = b2CreateBody(m_PhysicsWorld, &bodyDef);
 			if (rb2d.FixedRotation)
 			{
@@ -124,7 +124,7 @@ namespace Hazel
 
 				transform.Translation.x = b2Body_GetPosition(rb2d.RuntimeBody).x;
 				transform.Translation.y = b2Body_GetPosition(rb2d.RuntimeBody).y;
-				transform.Rotation.z = b2Body_GetRotation(rb2d.RuntimeBody).c;
+				transform.Rotation.z = b2Rot_GetAngle(b2Body_GetRotation(rb2d.RuntimeBody));
 				
 			}
 		}
