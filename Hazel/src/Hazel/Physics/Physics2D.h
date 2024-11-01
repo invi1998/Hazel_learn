@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Hazel/Scene/Components.h"
-#include "box2d/box2d.h"
 
 namespace Hazel
 {
 	namespace Utils
 	{
-		inline b2BodyType ConvertToBox2DBodyType(Rigidbody2DComponent::Type type)
+		inline b2BodyType ConvertToBox2DBodyType(Rigidbody2DComponent::BodyType type)
 		{
 			switch (type)
 			{
@@ -20,7 +19,7 @@ namespace Hazel
 			return b2BodyType::b2_staticBody;
 		}
 
-		inline Rigidbody2DComponent::Type ConvertToHazelBodyType(b2BodyType type)
+		inline Rigidbody2DComponent::BodyType ConvertToHazelBodyType(b2BodyType type)
 		{
 			switch (type)
 			{

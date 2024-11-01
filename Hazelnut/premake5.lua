@@ -19,6 +19,7 @@ project "Hazelnut"
 		"%{wks.location}/Hazel/src",
 		"%{wks.location}/Hazel/vendor",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.box2d}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGuizmo}"
 	}

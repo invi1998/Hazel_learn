@@ -22,8 +22,12 @@ namespace Hazel
 		void DrawEntityNode(Entity entity);
 		void DrawComponents(Entity entity);
 
+		template<typename T>
+		void DisplayAddComponentEntity(const std::string& entityName);
+
 	private:
 		std::shared_ptr<Scene> m_Context;
 		Entity m_SelectionContext;
 	};
+
 }

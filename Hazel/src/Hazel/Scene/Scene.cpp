@@ -274,4 +274,14 @@ namespace Hazel
 	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent &component)
 	{
 	}
+
+	template <>
+	void Scene::OnComponentAdded<Rigidbody2DComponent>(Entity entity, Rigidbody2DComponent &component)
+	{
+	}
+
+	template <>
+	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent &component)
+	{
+	}
 }

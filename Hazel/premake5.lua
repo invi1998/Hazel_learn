@@ -1,6 +1,7 @@
 project "Hazel"
 	kind "StaticLib"
 	language "C++"
+	cdialect "C17"
 	cppdialect "C++20"
 	staticruntime "off"
 

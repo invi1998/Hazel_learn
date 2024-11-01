@@ -4,6 +4,7 @@
 #include "Hazel/Core/UUID.h"
 #include "Hazel/Renderer/OrthographicCamera.h"
 #include "Hazel/Renderer/Texture.h"
+#include "box2d/box2d.h"
 
 namespace Hazel
 {

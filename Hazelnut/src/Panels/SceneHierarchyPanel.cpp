@@ -244,17 +244,10 @@ namespace Hazel
 
 		if (ImGui::BeginPopup("AddComponent"))
 		{
-			if (ImGui::MenuItem("Camera"))
-			{
-				m_SelectionContext.AddComponent<CameraComponent>();
-				ImGui::CloseCurrentPopup();
-			}
-
-			if (ImGui::MenuItem("Sprite Renderer"))
-			{
-				m_SelectionContext.AddComponent<SpriteRendererComponent>();
-				ImGui::CloseCurrentPopup();
-			}
+			DisplayAddComponentEntity<CameraComponent>("Camera");
+			DisplayAddComponentEntity<SpriteRendererComponent>("Sprite Renderer");
+			DisplayAddComponentEntity<Rigidbody2DComponent>("Rigidbody 2D");
+			DisplayAddComponentEntity<BoxCollider2DComponent>("Box Collider 2D");
 
 			ImGui::EndPopup();
 		}
@@ -371,5 +364,54 @@ namespace Hazel
 
 			ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f, "%.2f");
 		});
+
+		DrawComponent<Rigidbody2DComponent>("Rigidbody 2D", entity, [](auto& component)
+		{
+			const char* bodyTypeStrings[] = { "Static", "Dynamic", "Kinematic" };
+			const char* currentBodyTypeString = bodyTypeStrings[static_cast<int>(component.Type)];
+			if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
+					if (ImGui::Selectable(bodyTypeStrings[i], &isSelected))
+					{
+						currentBodyTypeString = bodyTypeStrings[i];
+						component.Type = static_cast<Rigidbody2DComponent::BodyType>(i);
+					}
+
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+
+				ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+
+				ImGui::EndCombo();
+			}
+		});
+
+		DrawComponent<BoxCollider2DComponent>("Box Collider 2D", entity, [](auto& component)
+		{
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset), 0.1f);
+			ImGui::DragFloat2("Size", glm::value_ptr(component.Size), 0.1f);
+			ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+			ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+		});
+	}
+
+	template <typename T>
+	void SceneHierarchyPanel::DisplayAddComponentEntity(const std::string& entityName)
+	{
+		if (!m_SelectionContext.HasComponent<T>())
+		{
+			if (ImGui::MenuItem(entityName.c_str()))
+			{
+				m_SelectionContext.AddComponent<T>();
+				ImGui::CloseCurrentPopup();
+			}
+		}
 	}
 }
