@@ -99,4 +99,38 @@ namespace Hazel
 			{delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 	};
+
+	// 物理
+	struct Rigidbody2DComponent		// 刚体组件
+	{
+		enum class BodyType
+		{
+			Static = 0,			//	静态
+			Dynamic = 1,		//	动态
+			Kinematic = 2		//	运动学
+		};
+
+		BodyType Type = BodyType::Static;
+		bool FixedRotation = false;
+
+		b2BodyId RuntimeBody;		// 运行时的物理体
+
+		Rigidbody2DComponent() = default;
+		Rigidbody2DComponent(const Rigidbody2DComponent &) = default;
+	};
+
+	struct BoxCollider2DComponent	// 矩形碰撞体组件
+	{
+		glm::vec2 Size = {1.0f, 1.0f};
+		glm::vec2 Offset = {0.0f, 0.0f};
+
+		float Density = 1.0f;	// 密度
+		float Friction = 0.5f;	// 摩擦力
+		float Restitution = 0.0f;	// 弹性
+
+		b2ShapeId RuntimeFixture;		// 运行时的夹具
+
+		BoxCollider2DComponent() = default;
+		BoxCollider2DComponent(const BoxCollider2DComponent &) = default;
+	};
 }
