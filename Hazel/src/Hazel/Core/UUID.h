@@ -23,6 +23,7 @@ namespace std
 	template<>
 	struct hash<Hazel::UUID>
 	{
+		// 这是一个哈希函数，它将 UUID 转换为 std::size_t
 		std::size_t operator()(const Hazel::UUID& uuid) const noexcept
 		{
 			return (uint64_t)uuid;
