@@ -14,6 +14,51 @@
 
 namespace Hazel
 {
+	template<typename ...Comp>
+	static void CopyComponents(entt::registry& srcRegistry, entt::registry& dstRegistry, std::unordered_map<UUID, entt::entity>& entMap)
+	{
+		// 使用折叠表达式展开参数包，同时lambda表达式中使用逗号运算次执行多个语句
+		auto process_type = [&]<typename T>()
+		{
+			auto view = srcRegistry.view<T>();
+			for (auto srcEntity : view)
+			{
+				entt::entity dstEntity = entMap.at(srcRegistry.get<IDComponent>(srcEntity).ID);
+				auto& srcComponent = srcRegistry.get<T>(srcEntity);
+				dstRegistry.emplace_or_replace<T>(dstEntity, srcComponent);
+			}
+		};
+
+		(process_type.template operator()<Comp>(), ...);
+	}
+
+	template<typename ...Comp>
+	static void CopyComponents(ComponentList<Comp...>, entt::registry& srcRegistry, entt::registry& dstRegistry, std::unordered_map<UUID, entt::entity>& entMap)
+	{
+		CopyComponents<Comp...>(srcRegistry, dstRegistry, entMap);
+	}
+
+	template<typename ...Comp>
+	static void CopyComponentIfExists(Entity srcEntity, Entity dstEntity)
+	{
+		auto process_type = [&]<typename T>()
+		{
+			if (srcEntity.HasComponent<T>())
+			{
+				auto& srcComponent = srcEntity.GetComponent<T>();
+				dstEntity.AddOrReplaceComponent<T>(srcComponent);
+			}
+		};
+
+		(process_type.template operator()<Comp>(), ...);
+	}
+
+	template<typename ...Comp>
+	static void CopyComponentIfExists(ComponentList<Comp...>, Entity srcEntity, Entity dstEntity)
+	{
+		CopyComponentIfExists<Comp...>(srcEntity, dstEntity);
+	}
+
 	Scene::Scene()
 	{
 		// m_Registry.on_construct<CameraComponent>().connect<&Function>();
@@ -235,6 +280,57 @@ namespace Hazel
 			}
 		}
 		return {};
+	}
+
+	std::shared_ptr<Scene> Scene::Copy(std::shared_ptr<Scene> otherScene)
+	{
+		std::shared_ptr<Scene> newScene = std::make_shared<Scene>();
+
+		newScene->m_ViewportWidth = otherScene->m_ViewportWidth;
+		newScene->m_ViewportHeight = otherScene->m_ViewportHeight;
+		std::unordered_map<UUID, entt::entity> entMap;
+
+		auto& srcSceneRegistry = otherScene->m_Registry;
+		auto& dstSceneRegistry = newScene->m_Registry;
+
+		const auto idView = srcSceneRegistry.view<IDComponent>();
+		for (const auto entity : idView)
+		{
+			UUID uuid = srcSceneRegistry.get<IDComponent>(entity).ID;
+			const auto& name = srcSceneRegistry.get<TagComponent>(entity).Tag;
+			const Entity newEntity = newScene->CreateEntityWithUUID(name, uuid);
+			entMap[uuid] = newEntity;
+		}
+
+		CopyComponents(AllComponents{}, srcSceneRegistry, dstSceneRegistry, entMap);
+
+		return newScene;
+	}
+
+	Entity Scene::DuplicateEntity(Entity entity)
+	{
+		std::string name = entity.GetName() + "_Copy";
+		const Entity newEntity = CreateEntity(name);
+		CopyComponentIfExists(AllComponents{}, entity, newEntity);
+		return newEntity;
+	}
+
+	void Scene::OnPhysics2DStart()
+	{
+	}
+
+	void Scene::OnPhysics2DStop()
+	{
+	}
+
+	void Scene::OnSimulationStart()
+	{
+		OnPhysics2DStart();
+	}
+
+	void Scene::OnSimulationStop()
+	{
+		OnPhysics2DStop();
 	}
 
 	template <typename T>

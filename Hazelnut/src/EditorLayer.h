@@ -32,6 +32,10 @@ namespace Hazel
 		void OnScenePlay();
 		void OnSceneStop();
 
+		void OnDuplicateEntity();
+
+		void OnSceneSimulate();
+
 		// UI面板
 		void UI_Toolbar();
 
@@ -47,6 +51,8 @@ namespace Hazel
 		std::shared_ptr<FrameBuffer> m_FrameBuffer;
 
 		std::shared_ptr<Scene> m_ActiveScene;
+		std::shared_ptr<Scene> m_EditorScene;
+		std::shared_ptr<Scene> m_RuntimeScene;
 		Entity m_SquaredEntity;
 		Entity m_CameraEntity;
 		Entity m_SecondCamera;
@@ -75,7 +81,9 @@ namespace Hazel
 		// Scene State
 		enum class SceneState
 		{
-			Edit = 0, Play = 1
+			Edit = 0,		// 编辑模式
+			Play = 1,		// 播放模式
+			Simulate = 2	// 模拟模式
 		} m_SceneState = SceneState::Edit;
 		
 	};

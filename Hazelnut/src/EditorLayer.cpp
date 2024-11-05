@@ -446,6 +446,16 @@ namespace Hazel
 				break;
 			}
 
+			// 场景编辑
+			case Key::D:
+			{
+				if (control)
+				{
+					OnDuplicateEntity();	// Control + D 复制实体
+				}
+				break;
+			}
+
 			// Gizmos
 			case Key::Q:
 			{
@@ -494,12 +504,28 @@ namespace Hazel
 
 	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
-		m_ActiveScene = std::make_shared<Scene>();
-		m_ActiveScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
-		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		if (m_SceneState != SceneState::Edit)
+		{
+			OnSceneStop();
+		}
 
-		SceneSerializer serializer(m_ActiveScene);
-		serializer.Deserialize(path.string());
+		if (path.extension().string() != ".hazel")
+		{
+			HZ_CORE_ERROR("Invalid file type! ({0})", path.filename().string());
+			return;
+		}
+
+		std::shared_ptr<Scene> newScene = std::make_shared<Scene>();
+		SceneSerializer serializer(newScene);
+		if (serializer.Deserialize(path.string()))
+		{
+			m_EditorScene = newScene;
+
+			m_EditorScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
+			m_SceneHierarchyPanel.SetContext(m_EditorScene);
+
+			m_ActiveScene = m_EditorScene;
+		}
 	}
 
 	void EditorLayer::SaveAs()
@@ -527,14 +553,46 @@ namespace Hazel
 
 	void EditorLayer::OnScenePlay()
 	{
-		m_ActiveScene->OnRuntimeStart();
 		m_SceneState = SceneState::Play;
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+
+		m_ActiveScene->OnRuntimeStart();
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
 		m_ActiveScene->OnRuntimeEnd();
 		m_SceneState = SceneState::Edit;
+	}
+
+	void EditorLayer::OnDuplicateEntity()
+	{
+		if (m_SceneState != SceneState::Edit)
+		{
+			return;
+		}
+
+		if (const Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity())
+		{
+			const Entity newEntity = m_EditorScene->DuplicateEntity(selectedEntity);
+			m_SceneHierarchyPanel.SetSelectedEntity(newEntity);
+		}
+	}
+
+	void EditorLayer::OnSceneSimulate()
+	{
+		if (m_SceneState == SceneState::Play)
+		{
+			OnSceneStop();
+		}
+
+		m_SceneState = SceneState::Simulate;
+		m_ActiveScene = Scene::Copy(m_EditorScene);
+		m_ActiveScene->OnSimulationStart();
+
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
 	}
 
 	void EditorLayer::UI_Toolbar()

@@ -38,6 +38,16 @@ namespace Hazel
 
 		Entity GetPrimaryCameraEntity();
 
+		static std::shared_ptr<Scene> Copy(std::shared_ptr<Scene> otherScene);
+
+		Entity DuplicateEntity(Entity entity);
+
+		void OnPhysics2DStart();
+		void OnPhysics2DStop();
+
+		void OnSimulationStart();
+		void OnSimulationStop();
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
