@@ -31,10 +31,9 @@ namespace Hazel
 
 		void OnScenePlay();
 		void OnSceneStop();
+		void OnSceneSimulate();
 
 		void OnDuplicateEntity();
-
-		void OnSceneSimulate();
 
 		// UI面板
 		void UI_Toolbar();
@@ -53,6 +52,7 @@ namespace Hazel
 		std::shared_ptr<Scene> m_ActiveScene;
 		std::shared_ptr<Scene> m_EditorScene;
 		std::shared_ptr<Scene> m_RuntimeScene;
+		std::filesystem::path m_EditorScenePath;
 		Entity m_SquaredEntity;
 		Entity m_CameraEntity;
 		Entity m_SecondCamera;
@@ -75,8 +75,11 @@ namespace Hazel
 		// Drop BG
 		std::shared_ptr<Texture2D> m_DropTargetTexture;	// 拖拽背景
 
-		std::shared_ptr<Texture2D> m_IconPlay;
-		std::shared_ptr<Texture2D> m_IconStop;
+		std::shared_ptr<Texture2D> m_IconPlay;		// 播放图标
+		std::shared_ptr<Texture2D> m_IconStop;		// 停止图标
+		std::shared_ptr<Texture2D> m_IconPause;		// 暂停图标
+		std::shared_ptr<Texture2D> m_IconSimulate;	// 模拟图标
+		std::shared_ptr<Texture2D> m_IconStep;		// 步进图标
 
 		// Scene State
 		enum class SceneState

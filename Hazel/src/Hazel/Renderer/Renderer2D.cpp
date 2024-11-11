@@ -168,8 +168,6 @@ namespace Hazel
 	{
 		HZ_PROFILE_FUNCTION();
 
-		glm::mat4 viewProj = camera.GetViewProjection();
-
 		s_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
 		s_Data.CameraUniformBuffer->SetData(&s_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 

@@ -31,6 +31,9 @@ namespace Hazel
 		m_BackgroundTexture = Texture2D::Create("assets/textures/batthern.png");
 		m_IconPlay = Texture2D::Create("Resources/Icons/PlayButton.png");
 		m_IconStop = Texture2D::Create("Resources/Icons/StopButton.png");
+		m_IconPause = Texture2D::Create("Resources/Icons/PauseButton.png");
+		m_IconStep = Texture2D::Create("Resources/Icons/StepButton.png");
+		m_IconSimulate = Texture2D::Create("Resources/Icons/SimulateButton.png");
 
 		m_CameraController.SetZoomLevel(5.0f);
 
@@ -40,7 +43,8 @@ namespace Hazel
 		fbSpec.Height = 720;
 		m_FrameBuffer = FrameBuffer::Create(fbSpec);
 
-		m_ActiveScene = std::make_shared<Scene>();
+		m_EditorScene = std::make_shared<Scene>();
+		m_ActiveScene = m_EditorScene;
 
 		m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
@@ -520,11 +524,10 @@ namespace Hazel
 		if (serializer.Deserialize(path.string()))
 		{
 			m_EditorScene = newScene;
-
-			m_EditorScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
 			m_SceneHierarchyPanel.SetContext(m_EditorScene);
 
 			m_ActiveScene = m_EditorScene;
+			m_EditorScenePath = path;
 		}
 	}
 
@@ -553,6 +556,11 @@ namespace Hazel
 
 	void EditorLayer::OnScenePlay()
 	{
+		if (m_SceneState == SceneState::Simulate)
+		{
+			OnSceneStop();
+		}
+
 		m_SceneState = SceneState::Play;
 		m_ActiveScene = Scene::Copy(m_EditorScene);
 
@@ -562,8 +570,16 @@ namespace Hazel
 
 	void EditorLayer::OnSceneStop()
 	{
-		m_ActiveScene->OnRuntimeEnd();
-		m_SceneState = SceneState::Edit;
+		HZ_CORE_ASSERT(m_SceneState == SceneState::Play || m_SceneState == SceneState::Simulate);
+
+		if (m_SceneState == SceneState::Play)
+		{
+			m_ActiveScene->OnRuntimeStop();
+		}
+		else if (m_SceneState == SceneState::Simulate)
+		{
+			m_ActiveScene->OnSimulationStop();
+		}
 	}
 
 	void EditorLayer::OnDuplicateEntity()
@@ -608,8 +624,6 @@ namespace Hazel
 		const auto& buttonHovered = color[ImGuiCol_ButtonHovered];
 		const auto& buttonActive = color[ImGuiCol_ButtonActive];
 
-		std::shared_ptr<Texture2D> icon = m_SceneState == SceneState::Play ? m_IconStop : m_IconPlay;
-
 		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x - size) * 0.5f);
 
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
@@ -618,19 +632,91 @@ namespace Hazel
 
 		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x - size) * 0.5f);
 
-		ImVec4 buttonColor = m_SceneState == SceneState::Play ? ImVec4(0.8f, 0.2f, 0.2f, 1.0f) : ImVec4(0.2f, 0.8f, 0.2f, 1.0f);
+		bool hasPlayButton = m_SceneState == SceneState::Play || m_SceneState == SceneState::Edit;
+		bool hasSimulateButton = m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulate;
+		bool hasPauseButton = m_SceneState != SceneState::Edit;
 
-		if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->GetRendererID()), ImVec2{ size, size }, { 0, 0 }, { 1, 1 }, 0, {0, 0, 0, 0}, buttonColor))
+		ImVec4 tintColor = ImVec4(0.8f, 0.8f, 0.8f, 1.0f);
+		const bool toolbarEnabled = static_cast<bool>(m_ActiveScene);
+
+		if (hasPlayButton)
 		{
-			if (m_SceneState == SceneState::Edit)
+			std::shared_ptr<Texture2D> icon = m_SceneState == SceneState::Play ? m_IconStop : m_IconPlay;
+			ImVec4 buttonColor = m_SceneState == SceneState::Play ? ImVec4(0.8f, 0.2f, 0.2f, 1.0f) : ImVec4(0.2f, 0.8f, 0.2f, 1.0f);
+			if (!toolbarEnabled)
 			{
-				OnScenePlay();
+				buttonColor.w = 0.2f;
 			}
-			else if (m_SceneState == SceneState::Play)
+			if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->GetRendererID()), ImVec2{ size, size }, { 0, 0 }, { 1, 1 }, 0, {0, 0, 0, 0}, buttonColor) && toolbarEnabled)
 			{
-				OnSceneStop();
+				if (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Simulate)
+				{
+					OnScenePlay();
+				}
+				else if (m_SceneState == SceneState::Play)
+				{
+					OnSceneStop();
+				}
 			}
 		}
+
+		if (hasSimulateButton)
+		{
+			if (hasPlayButton)
+			{
+				ImGui::SameLine();
+			}
+
+			std::shared_ptr<Texture2D> icon = (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play) ? m_IconSimulate : m_IconStop;
+			ImVec4 buttonColor = (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play) ? ImVec4(0.2f, 0.8f, 0.2f, 1.0f) : ImVec4(0.8f, 0.2f, 0.2f, 1.0f);
+
+			if (!toolbarEnabled)
+			{
+				buttonColor.w = 0.2f;
+			}
+
+			if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->GetRendererID()), ImVec2{ size, size }, { 0, 0 }, { 1, 1 }, 0, {0, 0, 0, 0}, buttonColor) && toolbarEnabled)
+			{
+				if (m_SceneState == SceneState::Edit || m_SceneState == SceneState::Play)
+				{
+					OnSceneSimulate();
+				}
+				else if (m_SceneState == SceneState::Simulate)
+				{
+					OnSceneStop();
+				}
+			}
+		}
+
+		if (hasPauseButton)
+		{
+			bool isPaused = m_ActiveScene->IsPaused();
+			ImGui::SameLine();
+			{
+				ImVec4 buttonColor = isPaused ? ImVec4(0.2f, 0.8f, 0.2f, 1.0f) : ImVec4(0.8f, 0.2f, 0.2f, 1.0f);
+				if (!toolbarEnabled)
+				{
+					buttonColor.w = 0.2f;
+				}
+				if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_IconPause->GetRendererID()), ImVec2{ size, size }, { 0, 0 }, { 1, 1 }, 0, { 0, 0, 0, 0 }, buttonColor) && toolbarEnabled)
+				{
+					m_ActiveScene->SetPaused(!isPaused);
+				}
+
+			}
+
+			// step
+			if (isPaused)
+			{
+				ImGui::SameLine();
+				if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_IconStep->GetRendererID()), ImVec2{ size, size }, { 0, 0 }, { 1, 1 }, 0, { 0, 0, 0, 0 }, ImVec4(0.2f, 0.8f, 0.2f, 1.0f)) && toolbarEnabled)
+				{
+					m_ActiveScene->Step();
+				}
+			
+			}
+		}
+		
 
 		ImGui::PopStyleVar(2);
 		ImGui::PopStyleColor(3);
