@@ -740,7 +740,6 @@ namespace Hazel
 		if (hasPauseButton)
 		{
 			const bool isPaused = m_ActiveScene->IsPaused();
-			HZ_CORE_INFO("isPaused: {0}", isPaused);
 			ImGui::SameLine();
 			{
 				ImVec4 buttonColor = isPaused ? ImVec4(0.2f, 0.8f, 0.2f, 1.0f) : ImVec4(0.8f, 0.2f, 0.2f, 1.0f);
@@ -750,7 +749,6 @@ namespace Hazel
 				}
 				if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_IconPause->GetRendererID()), ImVec2{ size, size }, { 0, 0 }, { 1, 1 }, 0, { 0, 0, 0, 0 }, buttonColor) && toolbarEnabled)
 				{
-					HZ_CORE_INFO("Pause");
 					m_ActiveScene->SetPaused(!isPaused);
 				}
 
