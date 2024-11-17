@@ -142,19 +142,30 @@ namespace Hazel
 		switch (m_SceneState)
 		{
 			case SceneState::Edit:
-				m_ActiveScene->OnUpdateEditor(timeStep, m_EditorCamera);
-
+			{
 				// Update
 				if (m_ViewportFocused)
 				{
 					m_CameraController.OnUpdate(timeStep);
-					m_EditorCamera.OnUpdate(timeStep);
 				}
 
+				m_EditorCamera.OnUpdate(timeStep);
+
+				m_ActiveScene->OnUpdateEditor(timeStep, m_EditorCamera);
+
 				break;
+			}
 			case SceneState::Play:
+			{
 				m_ActiveScene->OnUpdateRuntime(timeStep);
 				break;
+			}
+			case SceneState::Simulate:
+			{
+				m_EditorCamera.OnUpdate(timeStep);
+				m_ActiveScene->OnUpdateSimulation(timeStep, m_EditorCamera);
+				break;
+			}
 		}
 
 
@@ -172,6 +183,8 @@ namespace Hazel
 			int pixelData = m_FrameBuffer->ReadPixel(1, mouseX, mouseY);
 			m_HoveredEntity = pixelData == -1 ? Entity() : Entity{static_cast<entt::entity>(pixelData), m_ActiveScene.get()};
 		}
+
+		OnOverlayRender();
 
 		m_FrameBuffer->UnBind();
 	}
@@ -608,6 +621,28 @@ namespace Hazel
 		m_ActiveScene->OnSimulationStart();
 
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+	}
+
+	void EditorLayer::OnOverlayRender()
+	{
+		if (m_SceneState == SceneState::Play)
+		{
+			Entity primaryCameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+			if (!primaryCameraEntity)
+			{
+				return;
+			}
+
+			Renderer2D::BeginScene(primaryCameraEntity.GetComponent<CameraComponent>().Camera, primaryCameraEntity.GetComponent<TransformComponent>().GetTransform());
+		}
+		else
+		{
+			Renderer2D::BeginScene(m_EditorCamera);
+		}
+
+
+		Renderer2D::EndScene();
 
 	}
 

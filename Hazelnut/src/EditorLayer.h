@@ -33,6 +33,8 @@ namespace Hazel
 		void OnSceneStop();
 		void OnSceneSimulate();
 
+		void OnOverlayRender();
+
 		void OnDuplicateEntity();
 
 		// UI面板
