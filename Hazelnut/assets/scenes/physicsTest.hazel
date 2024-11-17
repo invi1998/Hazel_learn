@@ -1,42 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 14262174714947223339
-    TagComponent:
-      Tag: Camera
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 1
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 3092582102067158380
-    TagComponent:
-      Tag: Script
-    TransformComponent:
-      Translation: [-0.227049246, 2.15432286, 0]
-      Rotation: [0, 0, 3.14156508]
-      Scale: [0.199998081, 0.199998081, 1]
-    SpriteRendererComponent:
-      Color: [0.796792865, 0.899613917, 0.250085652, 1]
-    Rigidbody2DComponent:
-      BodyType: Dynamic
-      FixedRotation: false
-    BoxCollider2DComponent:
-      Size: [1, 1]
-      Offset: [0, 0]
-      Density: 1
-      Friction: 0.819999993
-      Restitution: 0.860000014
-  - Entity: 9088357685410329822
+  - Entity: 1355956663521574638
     TagComponent:
       Tag: Floor
     TransformComponent:
@@ -54,3 +18,39 @@ Entities:
       Density: 1
       Friction: 0.850000024
       Restitution: 0
+  - Entity: 7012590745623469602
+    TagComponent:
+      Tag: Script
+    TransformComponent:
+      Translation: [-0.227049246, 2.15432286, 0]
+      Rotation: [0, 0, 3.14156508]
+      Scale: [0.199998081, 0.199998081, 1]
+    SpriteRendererComponent:
+      Color: [0.796792865, 0.899613917, 0.250085652, 1]
+    Rigidbody2DComponent:
+      BodyType: Dynamic
+      FixedRotation: false
+    BoxCollider2DComponent:
+      Size: [1, 1]
+      Offset: [0, 0]
+      Density: 1
+      Friction: 0.819999993
+      Restitution: 0.860000014
+  - Entity: 6294807884133736402
+    TagComponent:
+      Tag: Camera
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -100
+        OrthographicFar: 100
+      Primary: true
+      FixedAspectRatio: false

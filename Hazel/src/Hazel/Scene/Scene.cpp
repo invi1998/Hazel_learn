@@ -86,7 +86,6 @@ namespace Hazel
 	{
 		m_IsRunning = true;
 		OnPhysics2DStart();
-		
 	}
 
 	void Scene::OnRuntimeEnd()
@@ -172,12 +171,12 @@ namespace Hazel
 		}
 
 		// Render 2D
-		Camera *mainCamera = nullptr;
+		const Camera *mainCamera = nullptr;
 		glm::mat4 cameraTransform;
 
 		{
-			auto view = m_Registry.view<TransformComponent, CameraComponent>();
-			for (auto entity : view)
+			const auto view = m_Registry.view<TransformComponent, CameraComponent>();
+			for (const auto entity : view)
 			{
 				auto [transform, camera] = view.get<TransformComponent, CameraComponent>(entity);
 
