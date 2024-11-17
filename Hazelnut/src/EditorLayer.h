@@ -32,6 +32,7 @@ namespace Hazel
 		void OnScenePlay();
 		void OnSceneStop();
 		void OnSceneSimulate();
+		void OnScenePause();
 
 		void OnOverlayRender();
 

@@ -506,8 +506,8 @@ namespace Hazel
 	void EditorLayer::NewScene()
 	{
 		m_ActiveScene = std::make_shared<Scene>();
-		m_ActiveScene->OnViewportResize(static_cast<uint32_t>(m_ViewportSize.x), static_cast<uint32_t>(m_ViewportSize.y));
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		m_EditorScenePath = std::filesystem::path();
 	}
 
 	void EditorLayer::OpenScene()
@@ -593,6 +593,10 @@ namespace Hazel
 		{
 			m_ActiveScene->OnSimulationStop();
 		}
+
+		m_SceneState = SceneState::Edit;
+		m_ActiveScene = m_EditorScene;
+		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnDuplicateEntity()
@@ -622,6 +626,16 @@ namespace Hazel
 
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
+	}
+
+	void EditorLayer::OnScenePause()
+	{
+		if (m_SceneState == SceneState::Edit)
+		{
+			return;
+		}
+
+		m_ActiveScene->SetPaused(true);
 	}
 
 	void EditorLayer::OnOverlayRender()
@@ -725,7 +739,8 @@ namespace Hazel
 
 		if (hasPauseButton)
 		{
-			bool isPaused = m_ActiveScene->IsPaused();
+			const bool isPaused = m_ActiveScene->IsPaused();
+			HZ_CORE_INFO("isPaused: {0}", isPaused);
 			ImGui::SameLine();
 			{
 				ImVec4 buttonColor = isPaused ? ImVec4(0.2f, 0.8f, 0.2f, 1.0f) : ImVec4(0.8f, 0.2f, 0.2f, 1.0f);
@@ -735,6 +750,7 @@ namespace Hazel
 				}
 				if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(m_IconPause->GetRendererID()), ImVec2{ size, size }, { 0, 0 }, { 1, 1 }, 0, { 0, 0, 0, 0 }, buttonColor) && toolbarEnabled)
 				{
+					HZ_CORE_INFO("Pause");
 					m_ActiveScene->SetPaused(!isPaused);
 				}
 
