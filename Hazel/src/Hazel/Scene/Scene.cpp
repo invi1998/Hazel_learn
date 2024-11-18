@@ -29,7 +29,22 @@ namespace Hazel
 			}
 		};
 
+		//  .template用于显式告诉编译器，后面的operator()是一个函数模板（process_type.operator() 可能会被误认为是一个非模板成员函数，因此需要加上 .template 来明确指出这是一个模板函数。
 		(process_type.template operator()<Comp>(), ...);
+
+		//// 使用匿名lambda表达式 也是一样的
+		//(
+		//	[&]<typename T>()
+		//	{
+		//		auto view = srcRegistry.view<T>();
+		//		for (auto srcEntity : view)
+		//		{
+		//			entt::entity dstEntity = entMap.at(srcRegistry.get<IDComponent>(srcEntity).ID);
+		//			auto& srcComponent = srcRegistry.get<T>(srcEntity);
+		//			dstRegistry.emplace_or_replace<T>(dstEntity, srcComponent);
+		//		}
+		//	}.template operator()<Comp>(), ...
+		//);
 	}
 
 	template<typename ...Comp>

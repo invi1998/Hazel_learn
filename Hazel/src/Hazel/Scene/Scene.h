@@ -78,7 +78,7 @@ namespace Hazel
 		bool m_IsPaused = false;
 		int m_StepFrames = 0;
 		
-		b2WorldId m_PhysicsWorld;
+		b2WorldId m_PhysicsWorld{};
 
 		float m_RestitutionThreshold = 0.5f;	// 弹性阈值（物理计算的最小速度，如果速度小于这个值，就认为是0，防止物体抖动）
 
