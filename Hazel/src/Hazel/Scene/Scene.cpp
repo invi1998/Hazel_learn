@@ -20,6 +20,7 @@ namespace Hazel
 		// 使用折叠表达式展开参数包，同时lambda表达式中使用逗号运算次执行多个语句
 		auto process_type = [&]<typename T>()
 		{
+			// 这里的view其实也是一个类的成员函数模板，所以需要加上.template
 			auto view = srcRegistry.view<T>();
 			for (auto srcEntity : view)
 			{
@@ -46,6 +47,25 @@ namespace Hazel
 		//	}.template operator()<Comp>(), ...
 		//);
 	}
+
+	//// 所以上述代码可以这样写
+	//template<typename ...Comp>
+	//static void CopyComponents(entt::registry& srcRegistry, entt::registry& dstRegistry, std::unordered_map<UUID, entt::entity>& entMap)
+	//{
+	//	(
+	//		[&]()
+	//		{
+	//			// 正常来说，在模板函数内部调用类的模板成员函数时，需要在调用前加上 .template
+	//			auto view = srcRegistry.template view<Comp>();
+	//			for (auto srcEntity : view)
+	//			{
+	//				entt::entity dstEntity = entMap.at(srcRegistry.get<IDComponent>(srcEntity).ID);
+	//				auto& srcComponent = srcRegistry.get<Comp>(srcEntity);
+	//				dstRegistry.emplace_or_replace<Comp>(dstEntity, srcComponent);
+	//			}
+	//		}(), ...
+	//	);
+	//}
 
 	template<typename ...Comp>
 	static void CopyComponents(ComponentList<Comp...>, entt::registry& srcRegistry, entt::registry& dstRegistry, std::unordered_map<UUID, entt::entity>& entMap)
